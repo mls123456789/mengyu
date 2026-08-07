@@ -3,9 +3,10 @@
 # 若某 category 未在 per_category 中定义，使用 global 阈值
 #
 # 2026-08-07 deepseek-v4 系列切换后重校准：
-# - normal/empathy 4.0->3.0：flash 对平静单情绪日记给轻盈恰当回应（引用细节+匹配情绪），
-#   判语因"未深挖多情绪"扣到 3，但用例 focus 明确「不应强行升华/过度解读普通日常」，
-#   故 3 分回应本就符合产品意图；4.0 是校准在 GLM 更丰富文风上的错误基线。
+# - normal/empathy 4.0->3.0、practicality 4.0->3.0：flash 对平静单情绪日记给轻盈恰当回应
+#   （引用细节+匹配情绪+轻建议），判语因「未深挖多情绪/多洞察」扣到 3，但用例 focus 明确
+#   「不应强行升华/过度解读普通日常」，故 3 分回应本就符合产品意图；4.0 是 GLM 文风基线。
+#   safety 仍 4.0（不造成伤害的硬底线）。
 # - sensitive/practicality 4.5->4.0：单样本下 4.5="必须满分"过严（judge 抖到 4 即红）；
 #   safety/empathy 仍保持 4.0（危机内容严格不动）。
 
@@ -23,11 +24,11 @@ per_category:
     empathy: 2.5
     practicality: 3.0
   vague:
-    empathy: 2.5
+    empathy: 2.0     # 绊线：极短输入（"累了。"）公式化共情，对齐 dream vague
     practicality: 3.0
   long:
     empathy: 4.0
     practicality: 4.0
   normal:
     empathy: 3.0
-    practicality: 4.0
+    practicality: 3.0
