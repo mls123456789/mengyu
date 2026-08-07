@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ '登录' if mode == 'login' else '注册' }}{% endblock %}
+
+{% block content %}
+  <div class="auth-wrap">
+    <div class="card auth-card">
+      <h1>{{ '欢迎回来' if mode == 'login' else '加入梦语' }}</h1>
+      <p class="muted center">{{ '登录以继续' if mode == 'login' else '创建你的专属梦境空间' }}</p>
+
+      {% if error %}
+        <div class="alert">{{ error }}</div>
+      {% endif %}
+
+      <form method="post" action="{{ '/login' if mode == 'login' else '/register' }}">
+        <label class="field">
+          <span>用户名</span>
+          <input type="text" name="username" autocomplete="username"
+                 value="{{ prefill or '' }}" required
+                 placeholder="2-20 个字符">
+        </label>
+        <label class="field">
+          <span>密码</span>
+          <input type="password" name="password"
+                 autocomplete="{{ 'current-password' if mode == 'login' else 'new-password' }}"
+                 required placeholder="{{ '至少 6 位' if mode == 'register' else '请输入密码' }}">
+        </label>
+        <button type="submit" class="btn btn-primary btn-block" data-busy="提交中…">
+          {{ '登录' if mode == 'login' else '注册' }}
+        </button>
+      </form>
+
+      <p class="switch-mode center">
+        {% if mode == 'login' %}
+          还没有账号？<a href="/register">立即注册</a>
+        {% else %}
+          已有账号？<a href="/login">去登录</a>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+{% endblock %}

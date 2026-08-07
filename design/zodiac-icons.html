@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<!--
+  梦语 · 星座图标风格小样 (zodiac-icons.html)
+  ───────────────────────────────────────────────────────────
+  目的：让产品负责人在「精绘星象符号 / 星座连线图 / 线条图腾」三种风格里挑一种，
+        挑定后再落地到 app/static 的三主题里。
+  图标来源（全部手工精绘 SVG path，零授权风险）：
+    · 风格 1 精绘星象符号 —— 自创重画的传统占星符号（描边渐变 + 柔光）。
+    · 风格 2 星座连线图   —— 手绘 SVG；星点与连线参考天文星座的公共域布局
+                            （星座连线属公共知识、星表为事实，无版权）。
+    · 风格 3 线条图腾     —— 自创极简线条插画（羊/牛/双子/蟹/狮/少女/天平/蝎/射手/海山羊/水瓶/双鱼）。
+  配色：金色调（适配 A/B 主题）；C 极光主题下整体可换极光渐变（改 CSS 变量即可）。
+  用法：浏览器直接打开本文件 (file://)，逐个网格对比小/大两种尺寸。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>梦语 · 星座图标风格小样</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg-1:#15122c; --bg-2:#1d1740; --bg-3:#2a1f55;
+    --card:rgba(255,255,255,.045);
+    --border:rgba(255,255,255,.12);
+    --text:#eceaf6; --muted:#a9a3c7;
+    --gold-1:#f7e7a8; --gold-2:#e7c878; --gold-3:#b88a3e;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Noto Sans SC",-apple-system,"Segoe UI",sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(900px 500px at 85% -10%, #3a2a6e 0%, transparent 55%),
+      radial-gradient(700px 460px at 0% 110%, #2a1f55 0%, transparent 55%),
+      linear-gradient(160deg,var(--bg-1),var(--bg-2) 55%,var(--bg-3));
+    background-attachment:fixed;
+    min-height:100vh; padding:48px clamp(16px,4vw,40px) 64px;
+    line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;}
+  header.intro{margin-bottom:40px;}
+  .eyebrow{font-family:"Cormorant Garamond",serif;font-size:12px;letter-spacing:.4em;
+    text-transform:uppercase;color:var(--gold-2);font-weight:600;margin-bottom:10px;}
+  h1{font-family:"Noto Serif SC",serif;font-size:clamp(24px,3.4vw,34px);font-weight:600;margin-bottom:14px;}
+  .intro p{color:var(--muted);font-size:14.5px;max-width:60em;}
+  .stylesum{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px;}
+  @media(max-width:760px){.stylesum{grid-template-columns:1fr;}}
+  .ss{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;}
+  .ss h3{font-family:"Noto Serif SC",serif;font-size:16px;color:var(--gold-1);margin-bottom:6px;}
+  .ss .feat{font-size:13px;color:var(--text);}
+  .ss .src{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.55;}
+
+  section.style{margin-top:46px;}
+  .style-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px;}
+  .style-head .n{font-family:"Cormorant Garamond",serif;font-size:13px;letter-spacing:.34em;
+    text-transform:uppercase;color:var(--gold-2);font-weight:600;}
+  .style-head h2{font-family:"Noto Serif SC",serif;font-size:22px;font-weight:600;}
+  .style-head .src{font-size:12px;color:var(--muted);}
+  .style-note{font-size:13px;color:var(--muted);margin:6px 0 20px;max-width:60em;}
+
+  .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;}
+  @media(max-width:1000px){.grid{grid-template-columns:repeat(4,1fr);}}
+  @media(max-width:680px){.grid{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:440px){.grid{grid-template-columns:repeat(2,1fr);}}
+
+  .cell{background:var(--card);border:1px solid var(--border);border-radius:16px;
+    padding:16px 12px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;
+    transition:transform .2s, border-color .2s;}
+  .cell:hover{transform:translateY(-3px);border-color:rgba(231,200,120,.4);}
+  .big{height:84px;display:flex;align-items:center;justify-content:center;}
+  .big svg{width:74px;height:74px;filter:drop-shadow(0 0 6px rgba(231,200,120,.32));}
+  .cell-name{font-size:13px;font-weight:600;text-align:center;}
+  .cell-name span{display:block;font-family:"Cormorant Garamond",serif;font-size:11px;
+    letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-top:1px;}
+  .small{display:flex;align-items:center;gap:10px;margin-top:2px;}
+  .chip{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;
+    border-radius:9px;background:rgba(0,0,0,.22);border:1px solid var(--border);}
+  .chip.c28{width:38px;height:38px;}
+  .chip svg{width:24px;height:24px;filter:drop-shadow(0 0 2px rgba(231,200,120,.25));}
+  .chip.c28 svg{width:28px;height:28px;}
+  .chip-glyph{font-size:18px;color:var(--muted);opacity:.7;margin-left:2px;}
+  .sz-label{font-size:10.5px;color:var(--muted);letter-spacing:.04em;}
+
+  /* 图标笔触：金渐变描边 + 圆角连接 */
+  svg .ph, svg .cp{stroke:url(#g);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  svg .ln{stroke:rgba(231,200,120,.42);stroke-width:1;stroke-linecap:round;fill:none;}
+  svg .st{fill:url(#g);stroke:none;}
+
+  .pick{margin-top:54px;text-align:center;padding:26px 20px;
+    background:var(--card);border:1px solid var(--border);border-radius:18px;}
+  .pick h3{font-family:"Noto Serif SC",serif;font-size:19px;margin-bottom:8px;}
+  .pick p{color:var(--muted);font-size:14px;}
+  .pick b{color:var(--gold-1);}
+  .legend{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-top:16px;
+    font-size:12px;color:var(--muted);}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--gold-2);
+    margin-right:6px;vertical-align:middle;}
+</style>
+</head>
+<body>
+  <!-- 共享金渐变（一次定义，所有图标引用） -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#f7e7a8"/>
+        <stop offset="50%" stop-color="#e7c878"/>
+        <stop offset="100%" stop-color="#b88a3e"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <div class="wrap">
+    <header class="intro">
+      <div class="eyebrow">梦语 · Zodiac Icon Direction</div>
+      <h1>十二星座图标 · 三种风格小样</h1>
+      <p>同一组 12 个星座，三种视觉语言。每个图标都同时给出 <b style="color:var(--gold-1)">大尺寸（≈74px，模拟运势卡头部 / hero）</b>与 <b style="color:var(--gold-1)">小尺寸（24 / 28px，模拟星座选择网格按钮）</b>——因为网格里的图标很小，<b>小尺寸下是否依然清晰好认</b>是挑选的关键依据。下方均为金色调（适配 A/B 主题）；C 极光主题下可整体换成极光渐变（仅改 CSS 变量）。</p>
+      <div class="stylesum">
+        <div class="ss"><h3>① 精绘星象符号</h3><div class="feat">把传统占星符号重画成统一精致线条，渐变描边＋柔光，克制高级。</div><div class="src">来源：手工精绘 SVG path（自创，无授权风险）。</div></div>
+        <div class="ss"><h3>② 星座连线图</h3><div class="feat">真实星点＋连线的天文星座图，编辑感、最“天文”，附 Unicode 符号点缀。</div><div class="src">来源：手绘 SVG；星点/连线参考公共域星图布局（星座连线为公共知识，无版权）。</div></div>
+        <div class="ss"><h3>③ 线条图腾</h3><div class="feat">每个星座的极简线条插画（羊/牛/蟹/狮/蝎…），最有设计感与故事性。</div><div class="src">来源：手工精绘线条插画 SVG（自创，无授权风险）。</div></div>
+      </div>
+    </header>
+
+    <section class="style">
+      <div class="style-head"><span class="n">Style 01</span><h2>精绘星象符号</h2><span class="src">· 手工精绘 path · 渐变描边＋柔光</span></div>
+      <div class="style-note">传统占星符号的“高级重画版”：等粗细描边、圆角连接、金渐变＋柔光，任意尺寸清晰。最贴近现有符号认知、学习成本最低。</div>
+      <div class="grid" id="g1"></div>
+    </section>
+
+    <section class="style">
+      <div class="style-head"><span class="n">Style 02</span><h2>星座连线图</h2><span class="src">· 手绘星点＋连线 · 公共域天文布局</span></div>
+      <div class="style-note">真实星座的星点与连线（天蝎的弯钩、狮子的镰刀、射手的茶壶都很有辨识度）。大尺寸下极具天文编辑感；但小尺寸信息量大、需重点验证清晰度。</div>
+      <div class="grid" id="g2"></div>
+    </section>
+
+    <section class="style">
+      <div class="style-head"><span class="n">Style 03</span><h2>线条图腾</h2><span class="src">· 手工精绘线条插画 · 自创</span></div>
+      <div class="style-note">每个星座化作极简线条插画：羊角、蟹钳、狮鬃、蝎尾、双鱼… 设计感与故事性最强、最独特；小尺寸需保证线条足够精简才不糊。</div>
+      <div class="grid" id="g3"></div>
+    </section>
+
+    <div class="pick">
+      <h3>挑好后告诉我风格名即可</h3>
+      <p>选 <b>① 精绘星象符号</b> / <b>② 星座连线图</b> / <b>③ 线条图腾</b>，我会把它落地到三主题（A/B 金、C 极光）的星座网格与运势卡头部。</p>
+      <div class="legend">
+        <span><i></i>大尺寸 ≈ 运势卡头部 / hero</span>
+        <span><i></i>小尺寸 24/28px ≈ 星座选择网格按钮</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    "use strict";
+    var VB48 = "0 0 48 48", VB64 = "0 0 64 48";
+    var ORDER = ["aries","taurus","gemini","cancer","leo","virgo","libra","scorpio","sagittarius","capricorn","aquarius","pisces"];
+
+    /* ---- 风格 1：精绘星象符号 ---- */
+    var S1 = {
+      aries:{name:"白羊座",en:"Aries",glyph:"♈",vb:VB48,paths:["M24 33 C 19 33 13 30 13 23 C 13 18 16 15 19 16","M24 33 C 29 33 35 30 35 23 C 35 18 32 15 29 16"]},
+      taurus:{name:"金牛座",en:"Taurus",glyph:"♉",vb:VB48,circles:[[24,29,8.5]],paths:["M16.5 21.5 C 15 14 19 11 24 14","M31.5 21.5 C 33 14 29 11 24 14"]},
+      gemini:{name:"双子座",en:"Gemini",glyph:"♊",vb:VB48,paths:["M18 12 V36","M30 12 V36","M15 14 H33","M15 34 H33"]},
+      cancer:{name:"巨蟹座",en:"Cancer",glyph:"♋",vb:VB48,circles:[[16,16,4],[32,32,4]],paths:["M20 16 H31","M28 32 H17"]},
+      leo:{name:"狮子座",en:"Leo",glyph:"♌",vb:VB48,paths:["M24 15 C 30 15 30 23 24 23 C 18 23 18 15 24 15","M24 23 C 24 31 30 33 35 30"]},
+      virgo:{name:"处女座",en:"Virgo",glyph:"♍",vb:VB48,paths:["M13 33 V17 L19 25 L25 17 V31","M25 31 C 31 33 34 29 31 25 C 29 23 27 25 29 27"]},
+      libra:{name:"天秤座",en:"Libra",glyph:"♎",vb:VB48,paths:["M12 33 H36","M12 24 H19 Q24 17 29 24 H36"]},
+      scorpio:{name:"天蝎座",en:"Scorpio",glyph:"♏",vb:VB48,paths:["M13 33 V17 L19 25 L25 17 V30","M25 30 H33","M30 27 L33 30 L30 33"]},
+      sagittarius:{name:"射手座",en:"Sagittarius",glyph:"♐",vb:VB48,paths:["M14 34 L34 14","M27 14 H34 V21","M18 24 H30"]},
+      capricorn:{name:"摩羯座",en:"Capricorn",glyph:"♑",vb:VB48,paths:["M16 15 L24 32 L31 17","M31 17 C 34 13 31 11 28 14"]},
+      aquarius:{name:"水瓶座",en:"Aquarius",glyph:"♒",vb:VB48,paths:["M12 20 L17 17 L22 20 L27 17 L32 20 L37 17","M12 29 L17 26 L22 29 L27 26 L32 29 L37 26"]},
+      pisces:{name:"双鱼座",en:"Pisces",glyph:"♓",vb:VB48,paths:["M11 24 H37","M15 16 C 11 20 11 28 15 32","M33 16 C 37 20 37 28 33 32"]}
+    };
+
+    /* ---- 风格 2：星座连线图 (viewBox 64x48) ---- */
+    var S2 = {
+      aries:{name:"白羊座",en:"Aries",glyph:"♈",vb:VB64,stars:[[18,32,1.5],[28,26,2.2],[40,30,1.6],[50,34,1.5]],lines:[["18,32 28,26 40,30 50,34"]]},
+      taurus:{name:"金牛座",en:"Taurus",glyph:"♉",vb:VB64,stars:[[44,32,2.5],[34,28,1.6],[26,26,1.8],[20,18,1.5],[14,15,1.4],[8,12,1.2]],lines:[["26,26 34,28 44,32"],["26,26 20,18 14,15"],["20,18 8,12"]]},
+      gemini:{name:"双子座",en:"Gemini",glyph:"♊",vb:VB64,stars:[[18,12,2.3],[30,10,2.3],[18,22,1.5],[30,22,1.5],[20,34,1.5],[32,36,1.5]],lines:[["18,12 18,22 20,34"],["30,10 30,22 32,36"],["18,12 30,10"]]},
+      cancer:{name:"巨蟹座",en:"Cancer",glyph:"♋",vb:VB64,stars:[[32,26,2.0],[24,16,1.5],[42,18,1.5],[24,36,1.4],[42,36,1.4]],lines:[["24,16 32,26 42,18"],["32,26 24,36"],["32,26 42,36"]]},
+      leo:{name:"狮子座",en:"Leo",glyph:"♌",vb:VB64,stars:[[22,32,2.5],[12,14,1.5],[16,20,1.4],[16,28,1.4],[40,30,1.6],[48,38,1.6],[28,38,1.4]],lines:[["12,14 16,20 16,28 22,32"],["22,32 28,38 48,38 40,30 22,32"]]},
+      virgo:{name:"处女座",en:"Virgo",glyph:"♍",vb:VB64,stars:[[48,38,2.5],[14,12,1.5],[22,18,1.5],[30,24,1.6],[40,30,1.5],[38,16,1.3]],lines:[["14,12 22,18 30,24 40,30 48,38"],["30,24 38,16"]]},
+      libra:{name:"天秤座",en:"Libra",glyph:"♎",vb:VB64,stars:[[20,16,1.9],[44,18,2.1],[34,38,1.9]],lines:[["20,16 44,18 34,38 20,16"]]},
+      scorpio:{name:"天蝎座",en:"Scorpio",glyph:"♏",vb:VB64,stars:[[28,26,2.7],[10,12,1.5],[16,14,1.5],[22,20,1.5],[34,32,1.5],[38,38,1.5],[44,40,1.5],[50,36,1.5],[52,30,1.6]],lines:[["10,12 16,14 22,20 28,26 34,32 38,38 44,40 50,36 52,30"]]},
+      sagittarius:{name:"射手座",en:"Sagittarius",glyph:"♐",vb:VB64,stars:[[20,34,2.5],[20,22,1.5],[36,22,1.5],[36,34,1.5],[12,16,1.5],[44,16,1.5],[28,12,1.4]],lines:[["20,22 36,22 36,34 20,34 20,22"],["20,22 12,16"],["36,22 44,16"],["28,12 28,22"]]},
+      capricorn:{name:"摩羯座",en:"Capricorn",glyph:"♑",vb:VB64,stars:[[16,18,1.9],[50,22,2.1],[32,38,1.9]],lines:[["16,18 50,22 32,38 16,18"]]},
+      aquarius:{name:"水瓶座",en:"Aquarius",glyph:"♒",vb:VB64,stars:[[28,14,2.1],[10,14,1.5],[20,18,1.5],[36,20,1.5],[44,14,1.5],[52,18,1.5],[24,30,1.4],[34,34,1.4],[44,30,1.4]],lines:[["10,14 20,18 28,14 36,20 44,14 52,18"],["24,30 34,34 44,30"]]},
+      pisces:{name:"双鱼座",en:"Pisces",glyph:"♓",vb:VB64,stars:[[24,22,2.1],[12,32,1.6],[36,32,1.5],[48,20,1.6]],lines:[["12,32 24,22 36,32 48,20"]]}
+    };
+
+    /* ---- 风格 3：线条图腾 ---- */
+    var S3 = {
+      aries:{name:"白羊座",en:"Aries (ram)",glyph:"♈",vb:VB48,paths:["M24 22 C 16 22 12 14 18 12 C 23 11 24 16 22 19","M24 22 C 32 22 36 14 30 12 C 25 11 24 16 26 19"],circles:[[24,30,4]],stars:[[21,30,.9],[27,30,.9]]},
+      taurus:{name:"金牛座",en:"Taurus (bull)",glyph:"♉",vb:VB48,paths:["M24 32 C 16 32 14 24 18 20 C 20 18 28 18 30 20 C 34 24 32 32 24 32","M18 20 C 14 14 10 14 11 19","M30 20 C 34 14 38 14 37 19","M21 32 C 21 36 27 36 27 32"],stars:[[21,26,.8],[27,26,.8]]},
+      gemini:{name:"双子座",en:"Gemini (twins)",glyph:"♊",vb:VB48,circles:[[18,15,3.5],[30,15,3.5]],paths:["M18 18 V33","M30 18 V33","M21 15 H27","M18 33 L15 38","M18 33 L21 38","M30 33 L27 38","M30 33 L33 38"]},
+      cancer:{name:"巨蟹座",en:"Cancer (crab)",glyph:"♋",vb:VB48,paths:["M16 24 C 16 19 32 19 32 24 C 32 29 16 29 16 24","M16 21 C 10 19 8 23 11 26","M32 21 C 38 19 40 23 37 26","M18 28 L15 34","M24 29 L24 35","M30 28 L33 34"]},
+      leo:{name:"狮子座",en:"Leo (lion)",glyph:"♌",vb:VB48,paths:["M24 13 C 13 13 11 24 16 31 C 19 35 29 35 32 31 C 37 24 35 13 24 13","M24 19 C 18 19 17 26 21 30 C 23 32 25 32 27 30 C 31 26 30 19 24 19"],stars:[[21,24,.9],[27,24,.9],[24,27,1]]},
+      virgo:{name:"处女座",en:"Virgo (maiden)",glyph:"♍",vb:VB48,circles:[[24,13,3.5]],paths:["M24 16 C 18 21 17 30 18 37","M24 16 C 30 21 31 30 30 37","M20 20 L16 29","M28 20 L32 29"]},
+      libra:{name:"天秤座",en:"Libra (scales)",glyph:"♎",vb:VB48,paths:["M24 13 V35","M16 37 H32","M11 18 H37","M11 18 V22","M37 18 V22","M7 22 C 7 28 15 28 15 22","M33 22 C 33 28 41 28 41 22"]},
+      scorpio:{name:"天蝎座",en:"Scorpio (scorpion)",glyph:"♏",vb:VB48,paths:["M14 18 C 21 15 27 18 28 23 C 29 28 29 31 32 35","M14 18 C 9 16 7 21 11 22","M27 19 C 32 17 35 22 30 23","M32 35 C 37 37 39 32 36 28 C 34 26 32 28 34 30","M20 22 L18 28","M24 24 L24 30"]},
+      sagittarius:{name:"射手座",en:"Sagittarius (archer)",glyph:"♐",vb:VB48,paths:["M14 14 C 8 24 8 30 14 36","M14 14 L14 36","M12 24 L34 24","M30 20 L34 24 L30 28"]},
+      capricorn:{name:"摩羯座",en:"Capricorn (sea-goat)",glyph:"♑",vb:VB48,paths:["M15 19 C 20 13 30 14 33 19 C 35 22 32 25 28 25 C 23 25 19 23 17 22","M31 18 C 36 13 39 16 36 20","M21 25 L19 31","M33 25 C 41 27 44 33 39 37 C 34 39 30 34 33 30"]},
+      aquarius:{name:"水瓶座",en:"Aquarius (water-bearer)",glyph:"♒",vb:VB48,paths:["M21 14 V18","M27 14 V18","M20 14 H28","M19 18 C 14 19 15 28 20 31 C 28 35 37 31 36 23 C 35 19 31 18 28 18","M22 31 C 20 35 24 37 22 41","M28 31 C 30 35 26 37 28 41"]},
+      pisces:{name:"双鱼座",en:"Pisces (fishes)",glyph:"♓",vb:VB48,paths:["M9 16 C 9 11 20 11 23 16 C 20 21 9 21 9 16","M6 12 L2 16 L6 20","M39 32 C 39 27 28 27 25 32 C 28 37 39 37 39 32","M42 28 L46 32 L42 36","M23 16 C 29 21 19 27 25 32"]}
+    };
+
+    function svgFor(ic){
+      var s = '<svg viewBox="' + ic.vb + '" preserveAspectRatio="xMidYMid meet" aria-label="' + ic.name + '">';
+      (ic.lines || []).forEach(function(p){ s += '<polyline class="ln" points="' + p + '" />'; });
+      (ic.paths || []).forEach(function(d){ s += '<path class="ph" d="' + d + '" />'; });
+      (ic.circles || []).forEach(function(c){ s += '<circle class="cp" cx="' + c[0] + '" cy="' + c[1] + '" r="' + c[2] + '" />'; });
+      (ic.stars || []).forEach(function(c){ s += '<circle class="st" cx="' + c[0] + '" cy="' + c[1] + '" r="' + c[2] + '" />'; });
+      return s + '</svg>';
+    }
+    function cellHTML(ic){
+      return (
+        '<div class="cell">' +
+          '<div class="big">' + svgFor(ic) + '</div>' +
+          '<div class="cell-name">' + ic.name + '<span>' + ic.en + '</span></div>' +
+          '<div class="small">' +
+            '<span class="chip" title="24px 按钮模拟">' + svgFor(ic) + '</span>' +
+            '<span class="chip c28" title="28px 按钮模拟">' + svgFor(ic) + '</span>' +
+            '<span class="chip-glyph" title="现用 Unicode">' + ic.glyph + '</span>' +
+          '</div>' +
+        '</div>'
+      );
+    }
+    function render(id, set){
+      var c = document.getElementById(id); if (!c) return;
+      var html = "";
+      ORDER.forEach(function(k){ html += cellHTML(set[k]); });
+      c.innerHTML = html;
+    }
+    render("g1", S1);
+    render("g2", S2);
+    render("g3", S3);
+  })();
+  </script>
+</body>
+</html>

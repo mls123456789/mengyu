@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<!--
+  梦语 · 视觉小样 C — 现代极光玻璃 (Modern Aurora Glass)
+  ───────────────────────────────────────────────────────────
+  图标集: Lucide (https://lucide.dev) — ISC License (内联 SVG 线图标)
+  星座字符: Unicode 星座符号 ♈♉♊♋♌♍♎♏♐♑♒♓ (极光渐变填色)
+  字体: Plus Jakarta Sans / Noto Sans SC (Google Fonts <link>)
+  数据可视化: 四维 = 分段进度条 (10 段, 2px 表面间隙, 精确百分比填充);
+              各维固定类别色 (pink/amber/violet/teal), 数值用白色文本色 (非类别色);
+              综合指数 = 极光 conic 圆环。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>梦语 · 小样 C — 现代极光玻璃</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0c0a18;
+    --text:#f3f1ff; --muted:#a89fd0; --muted-2:#7d74a8;
+    --glass:rgba(255,255,255,.06);
+    --glass-2:rgba(255,255,255,.045);
+    --border:rgba(255,255,255,.12);
+    --border-2:rgba(255,255,255,.08);
+    /* 四维固定类别色 (categorical, fixed order) */
+    --love:#ff6b9d;      /* 爱情 — 粉 */
+    --career:#f5b544;    /* 事业 — 琥珀 */
+    --wealth:#a78bfa;    /* 财富 — 紫 */
+    --health:#34d6c0;    /* 健康 — 青 */
+    --good:#5ad88a;
+    --bad:#ff7a8a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);}
+  body{
+    font-family:'Plus Jakarta Sans','Noto Sans SC',system-ui,sans-serif;
+    font-weight:400;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    padding:clamp(24px,4vw,40px) clamp(14px,3vw,28px) 56px;
+    position:relative;overflow-x:hidden;
+  }
+  /* 极光渐变网格: 多个模糊径向色块 */
+  .aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+  .blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;}
+  .b1{width:46vw;height:46vw;left:-12vw;top:-14vw;background:#6d4aff;}
+  .b2{width:40vw;height:40vw;right:-10vw;top:6vh;background:#2dd4bf;}
+  .b3{width:38vw;height:38vw;left:18vw;bottom:-16vw;background:#ff6b9d;}
+  .b4{width:30vw;height:30vw;right:-6vw;bottom:-8vw;background:#7c3aed;}
+  .grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:
+      radial-gradient(1px 1px at 15% 25%, #fff, transparent),
+      radial-gradient(1px 1px at 65% 55%, #fff, transparent),
+      radial-gradient(1px 1px at 35% 80%, #fff, transparent),
+      radial-gradient(1px 1px at 85% 15%, #fff, transparent);
+    background-size:300px 300px;}
+
+  .stage{max-width:920px;margin:0 auto;position:relative;z-index:1;}
+
+  /* 顶栏 */
+  .topbar{display:flex;align-items:center;justify-content:space-between;
+          margin-bottom:26px;}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;
+         letter-spacing:.02em;}
+  .logo-dot{width:26px;height:26px;border-radius:8px;
+     background:conic-gradient(from 140deg,#ff6b9d,#a78bfa,#34d6c0,#ff6b9d);
+     box-shadow:0 0 16px rgba(167,139,250,.6);}
+  .date-chip{font-size:13px;color:var(--muted);font-weight:500;
+     padding:8px 14px;border-radius:999px;background:var(--glass);
+     border:1px solid var(--border);}
+  .date-chip b{color:var(--text);}
+  .retro{display:inline-flex;align-items:center;gap:7px;font-size:12px;
+     font-weight:600;color:#ffd9e6;padding:8px 14px;border-radius:999px;
+     background:linear-gradient(120deg,rgba(255,107,157,.18),rgba(167,139,250,.18));
+     border:1px solid rgba(255,107,157,.32);}
+  .retro svg{width:13px;height:13px;stroke-width:2;animation:spin 8s linear infinite;}
+  @keyframes spin{to{transform:rotate(-360deg)}}
+
+  .card{
+    background:linear-gradient(180deg,var(--glass),var(--glass-2));
+    border:1px solid var(--border);border-radius:24px;
+    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    box-shadow:0 20px 50px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.08);
+  }
+
+  /* HERO */
+  .hero{display:grid;grid-template-columns:1fr auto;gap:30px;
+        align-items:center;padding:clamp(24px,3vw,36px);margin-bottom:20px;
+        position:relative;overflow:hidden;}
+  .hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(80% 100% at 0% 0%,rgba(167,139,250,.16),transparent 60%);}
+  .sign-block{position:relative;}
+  .sign-id{display:flex;align-items:center;gap:16px;}
+  .glyph{font-size:60px;line-height:1;
+     background:linear-gradient(135deg,#ff6b9d,#a78bfa 50%,#34d6c0);
+     -webkit-background-clip:text;background-clip:text;color:transparent;
+     filter:drop-shadow(0 0 16px rgba(167,139,250,.5));}
+  .sign-id h1{font-size:30px;font-weight:700;letter-spacing:.01em;}
+  .sign-id .en{font-size:12px;font-weight:600;letter-spacing:.28em;
+     text-transform:uppercase;color:var(--muted-2);margin-top:3px;}
+  .meta-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;
+     font-weight:500;color:var(--text);padding:6px 13px;border-radius:999px;
+     background:rgba(255,255,255,.06);border:1px solid var(--border-2);}
+  .chip .d{width:6px;height:6px;border-radius:50%;
+     background:linear-gradient(135deg,#ff6b9d,#a78bfa);}
+  .overall{margin-top:18px;font-size:15.5px;color:var(--text);line-height:1.65;
+     max-width:34em;font-weight:400;}
+  .btn{display:inline-flex;align-items:center;gap:9px;margin-top:20px;
+     font-size:13px;font-weight:600;color:#0c0a18;cursor:pointer;border:0;
+     border-radius:999px;padding:12px 24px;
+     background:linear-gradient(120deg,#ff6b9d,#a78bfa 55%,#34d6c0);
+     box-shadow:0 8px 24px rgba(167,139,250,.45);
+     transition:transform .2s, box-shadow .25s;}
+  .btn:hover{transform:translateY(-2px);
+     box-shadow:0 12px 30px rgba(167,139,250,.6);}
+  .btn svg{width:15px;height:15px;stroke-width:2.2;}
+
+  /* 极光圆环 */
+  .ring{--p:70;width:188px;height:188px;border-radius:50%;position:relative;
+     background:conic-gradient(#ff6b9d 0%, #f5b544 30%, #a78bfa 60%, #34d6c0 70%,
+                              rgba(255,255,255,.08) 70% 100%);
+     -webkit-mask:radial-gradient(circle, transparent 60%, #000 62%);
+             mask:radial-gradient(circle, transparent 60%, #000 62%);
+     box-shadow:0 0 40px rgba(167,139,250,.3);}
+  .ring-center{position:absolute;inset:0;display:flex;flex-direction:column;
+     align-items:center;justify-content:center;}
+  .ring-center .num{font-size:58px;font-weight:800;line-height:1;
+     background:linear-gradient(135deg,#fff,#d8ccff);
+     -webkit-background-clip:text;background-clip:text;color:transparent;
+     font-variant-numeric:tabular-nums;}
+  .ring-center .lbl{font-size:10.5px;font-weight:600;letter-spacing:.2em;
+     text-transform:uppercase;color:var(--muted);margin-top:4px;}
+
+  /* 区段 */
+  .sec-head{display:flex;align-items:center;gap:12px;margin:24px 4px 14px;}
+  .sec-head .t{font-size:12px;font-weight:700;letter-spacing:.18em;
+     text-transform:uppercase;color:var(--text);}
+  .sec-head .s{font-size:12px;color:var(--muted);}
+  .sec-head .ln{flex:1;height:1px;
+     background:linear-gradient(90deg,rgba(255,255,255,.14),transparent);}
+
+  /* 四维 (2x2) */
+  .grid4{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+  .dim{padding:20px 22px;--c:var(--love);}
+  .dim.love{--c:var(--love)} .dim.career{--c:var(--career)}
+  .dim.wealth{--c:var(--wealth)} .dim.health{--c:var(--health)}
+  .dim-top{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .dim-name{display:inline-flex;align-items:center;gap:11px;font-size:15px;font-weight:600;}
+  .ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;
+     color:var(--c);background:color-mix(in srgb, var(--c) 16%, transparent);
+     border:1px solid color-mix(in srgb, var(--c) 30%, transparent);}
+  .ic svg{width:18px;height:18px;stroke-width:2;}
+  .dim-num{font-size:30px;font-weight:800;color:var(--text);line-height:1;
+     font-variant-numeric:tabular-nums;}
+  .dim-num .u{font-size:13px;font-weight:600;color:var(--muted-2);margin-left:2px;}
+
+  /* 分段进度条: 10 段 + 表面间隙; 填充精确 = value% */
+  .segbar{margin-top:16px;height:10px;border-radius:6px;position:relative;
+     background:rgba(255,255,255,.07);overflow:hidden;}
+  .seg-fill{position:absolute;inset:0 auto 0 0;height:100%;
+     background:linear-gradient(90deg, color-mix(in srgb,var(--c) 70%, #000 0%), var(--c));
+     border-radius:6px;box-shadow:0 0 12px color-mix(in srgb,var(--c) 55%, transparent);}
+  .seps{position:absolute;inset:0;display:flex;justify-content:space-between;
+     padding:0 10%;pointer-events:none;}
+  .seps i{width:2px;background:var(--bg);height:100%;opacity:.85;}
+  .dim-cap{margin-top:12px;font-size:13px;color:var(--muted);line-height:1.6;}
+
+  /* 幸运 */
+  .panel{padding:22px 24px;margin-bottom:20px;}
+  .lucky{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .lkit{display:flex;align-items:center;gap:12px;padding:13px 15px;border-radius:14px;
+     background:rgba(255,255,255,.04);border:1px solid var(--border-2);}
+  .lkit .lic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+     color:#fff;flex-shrink:0;}
+  .lkit.c1 .lic{background:linear-gradient(135deg,#c4b5fd,#a78bfa);}
+  .lkit.c2 .lic{background:linear-gradient(135deg,#f5b544,#ff8a3d);}
+  .lkit.c3 .lic{background:linear-gradient(135deg,#34d6c0,#22a8d6);}
+  .lkit.c4 .lic{background:linear-gradient(135deg,#ff6b9d,#a78bfa);}
+  .lkit .lic svg{width:17px;height:17px;stroke-width:2;}
+  .lkit .k{font-size:10.5px;font-weight:600;letter-spacing:.14em;
+     text-transform:uppercase;color:var(--muted-2);}
+  .lkit .v{font-size:15px;font-weight:600;color:var(--text);margin-top:1px;
+     display:flex;align-items:center;gap:7px;}
+  .lkit .hex{font-size:11px;color:var(--muted);font-weight:500;
+     font-family:'Plus Jakarta Sans';letter-spacing:.03em;}
+
+  /* 关系 + 宜忌 横排 */
+  .row2{display:grid;grid-template-columns:1fr 1.4fr;gap:14px;margin-bottom:20px;}
+  .pair-card{padding:20px 22px;}
+  .pair-card .ph{font-size:12px;font-weight:700;letter-spacing:.16em;
+     text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+  .pairline{display:flex;align-items:center;gap:12px;padding:12px 0;}
+  .pairline + .pairline{border-top:1px solid var(--border-2);}
+  .pglyph{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+     font-size:22px;font-weight:700;}
+  .pairline.good .pglyph{color:#0c0a18;
+     background:linear-gradient(135deg,#5ad88a,#34d6c0);}
+  .pairline.bad .pglyph{color:#0c0a18;
+     background:linear-gradient(135deg,#ff7a8a,#ff6b9d);}
+  .pairline .pt .pk{font-size:11px;font-weight:600;letter-spacing:.16em;
+     text-transform:uppercase;color:var(--muted-2);}
+  .pairline .pt .pn{font-size:16px;font-weight:600;margin-top:1px;}
+
+  .yiji-card{padding:20px 22px;}
+  .yiji{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .yj .yh{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;
+     letter-spacing:.16em;text-transform:uppercase;margin-bottom:12px;}
+  .yj.yi .yh{color:var(--good);}
+  .yj.ji .yh{color:var(--bad);}
+  .yj .yh svg{width:15px;height:15px;stroke-width:2.4;}
+  .yj .tags{display:flex;flex-direction:column;gap:8px;}
+  .tag{font-size:13.5px;font-weight:500;color:var(--text);padding:9px 14px;
+     border-radius:10px;background:rgba(255,255,255,.05);border:1px solid var(--border-2);
+     display:flex;align-items:center;gap:8px;}
+  .yj.yi .tag{border-color:rgba(90,216,138,.25);background:rgba(90,216,138,.08);}
+  .yj.ji .tag{border-color:rgba(255,122,138,.25);background:rgba(255,122,138,.08);}
+  .tag .dt{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.7;}
+
+  /* 寄语 */
+  .motto{padding:28px 24px;text-align:center;position:relative;overflow:hidden;}
+  .motto::before{content:"";position:absolute;inset:0;pointer-events:none;
+     background:radial-gradient(60% 100% at 50% 0%,rgba(167,139,250,.16),transparent 60%);}
+  .motto .qrow{position:relative;display:inline-block;}
+  .motto .qm{font-family:'Plus Jakarta Sans';font-size:34px;font-weight:800;
+     background:linear-gradient(120deg,#ff6b9d,#a78bfa,#34d6c0);
+     -webkit-background-clip:text;background-clip:text;color:transparent;
+     vertical-align:-8px;}
+  .motto p{display:inline;font-size:20px;font-weight:500;color:var(--text);}
+
+  .foot{text-align:center;margin-top:24px;font-size:11px;font-weight:600;
+     letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);}
+
+  @media(max-width:680px){
+    .hero{grid-template-columns:1fr;text-align:left;}
+    .ring{margin:0 auto;}
+    .grid4,.lucky,.row2,.yiji{grid-template-columns:1fr;}
+    .lucky{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+  <div class="aurora">
+    <div class="blob b1"></div><div class="blob b2"></div>
+    <div class="blob b3"></div><div class="blob b4"></div>
+  </div>
+  <div class="grain"></div>
+
+  <main class="stage">
+
+    <div class="topbar">
+      <div class="brand"><span class="logo-dot"></span>梦语</div>
+      <div class="date-chip">今日 · <b>7月31日</b> 周五</div>
+      <div class="retro">
+        <!-- Lucide: rotate-ccw -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+        水星逆行中
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <section class="card hero">
+      <div class="sign-block">
+        <div class="sign-id">
+          <span class="glyph">♈</span>
+          <div>
+            <h1>白羊座</h1>
+            <div class="en">Aries · 勇敢 · 开创</div>
+          </div>
+        </div>
+        <div class="meta-chips">
+          <span class="chip"><span class="d"></span>火象</span>
+          <span class="chip"><span class="d"></span>守护星 火星</span>
+          <span class="chip"><span class="d"></span>关键词 勇敢·开创</span>
+        </div>
+        <p class="overall">整体节奏平稳，按自己的步调推进就好。</p>
+        <button class="btn">
+          <!-- Lucide: refresh-cw -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
+          换一签
+        </button>
+      </div>
+      <!-- 极光圆环: conic 70% -->
+      <div class="ring" style="--p:70">
+        <div class="ring-center">
+          <div class="num">70</div>
+          <div class="lbl">综合指数</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 四维 -->
+    <div class="sec-head"><span class="t">四维评分</span><span class="s">Dimensions</span><span class="ln"></span></div>
+    <section class="grid4">
+      <!-- 爱情 72 -->
+      <div class="card dim love">
+        <div class="dim-top">
+          <span class="dim-name"><span class="ic"><!-- heart -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+          </span>爱情</span>
+          <span class="dim-num">72<span class="u">/100</span></span>
+        </div>
+        <div class="segbar">
+          <div class="seg-fill" style="width:72%"></div>
+          <div class="seps"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+        <p class="dim-cap">感情上顺其自然，真诚的沟通最加分。</p>
+      </div>
+      <!-- 事业 80 -->
+      <div class="card dim career">
+        <div class="dim-top">
+          <span class="dim-name"><span class="ic"><!-- briefcase -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          </span>事业·学业</span>
+          <span class="dim-num">80<span class="u">/100</span></span>
+        </div>
+        <div class="segbar">
+          <div class="seg-fill" style="width:80%"></div>
+          <div class="seps"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+        <p class="dim-cap">事业学业贵在专注，稳扎稳打自有积累。</p>
+      </div>
+      <!-- 财富 76 -->
+      <div class="card dim wealth">
+        <div class="dim-top">
+          <span class="dim-name"><span class="ic"><!-- gem -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>
+          </span>财富</span>
+          <span class="dim-num">76<span class="u">/100</span></span>
+        </div>
+        <div class="segbar">
+          <div class="seg-fill" style="width:76%"></div>
+          <div class="seps"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+        <p class="dim-cap">财务上量入为出，把决定留给清醒的时刻。</p>
+      </div>
+      <!-- 健康 58 -->
+      <div class="card dim health">
+        <div class="dim-top">
+          <span class="dim-name"><span class="ic"><!-- activity -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </span>健康</span>
+          <span class="dim-num">58<span class="u">/100</span></span>
+        </div>
+        <div class="segbar">
+          <div class="seg-fill" style="width:58%"></div>
+          <div class="seps"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+        <p class="dim-cap">留意作息与精力，劳逸结合是今天的底色。</p>
+      </div>
+    </section>
+
+    <!-- 幸运 -->
+    <div class="sec-head"><span class="t">幸运</span><span class="s">Lucky</span><span class="ln"></span></div>
+    <section class="card panel">
+      <div class="lucky">
+        <div class="lkit c1">
+          <span class="lic"><!-- droplet -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69 17.66 8.4a8 8 0 1 1-11.31 0Z"/></svg>
+          </span>
+          <div><div class="k">幸运色</div><div class="v">丁香紫 <span class="hex">#C4B5FD</span></div></div>
+        </div>
+        <div class="lkit c2">
+          <span class="lic"><!-- hash -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16"/><path d="M4 15h16"/><path d="M10 3 8 21"/><path d="M16 3l-2 18"/></svg>
+          </span>
+          <div><div class="k">幸运数字</div><div class="v">8</div></div>
+        </div>
+        <div class="lkit c3">
+          <span class="lic"><!-- compass -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76Z"/></svg>
+          </span>
+          <div><div class="k">幸运方位</div><div class="v">西南</div></div>
+        </div>
+        <div class="lkit c4">
+          <span class="lic"><!-- gift -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>
+          </span>
+          <div><div class="k">幸运物品</div><div class="v">红绳手链</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 关系 + 宜忌 -->
+    <div class="row2">
+      <section class="card pair-card">
+        <div class="ph">速配 · 相克</div>
+        <div class="pairline good">
+          <span class="pglyph">♉</span>
+          <div class="pt"><div class="pk">Best 速配</div><div class="pn">金牛座</div></div>
+        </div>
+        <div class="pairline bad">
+          <span class="pglyph">♑</span>
+          <div class="pt"><div class="pk">Clash 相克</div><div class="pn">摩羯座</div></div>
+        </div>
+      </section>
+      <section class="card yiji-card">
+        <div class="yiji">
+          <div class="yj yi">
+            <div class="yh"><!-- check --><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>宜 Do</div>
+            <div class="tags">
+              <span class="tag"><span class="dt"></span>表达心意</span>
+              <span class="tag"><span class="dt"></span>整理桌面</span>
+            </div>
+          </div>
+          <div class="yj ji">
+            <div class="yh"><!-- x --><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>忌 Avoid</div>
+            <div class="tags">
+              <span class="tag"><span class="dt"></span>冲动消费</span>
+              <span class="tag"><span class="dt"></span>熬夜</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 寄语 -->
+    <section class="card motto">
+      <div class="qrow"><span class="qm">“</span><p>愿你今日心安，步履不停。</p><span class="qm">”</span></div>
+    </section>
+
+    <div class="foot">梦语 · MENG YU — 小样 C · 现代极光玻璃</div>
+  </main>
+</body>
+</html>

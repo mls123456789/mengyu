@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <!-- 星座图标 sprite：手工绘制，原创 SVG path（基于公共领域传统占星符号 + 克制星座纹路）。
+       symbol 内不写死尺寸，描边用 currentColor，颜色/辉光由外层 CSS 按主题控制。 -->
+  <symbol id="zod-aries" viewBox="0 0 48 48"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M24 33 C 19 33 13 30 13 23 C 13 18 16 15 19 16"/>
+    <path d="M24 33 C 29 33 35 30 35 23 C 35 18 32 15 29 16"/>
+    <path d="M24 6 V12 M21 9 H27" stroke-width="1.4"/>
+  </g></symbol>
+  <symbol id="zod-taurus" viewBox="0 0 48 48"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <circle cx="24" cy="29" r="8.5"/>
+    <path d="M16.5 21.5 C 15 14 19 11 24 14"/>
+    <path d="M31.5 21.5 C 33 14 29 11 24 14"/>
+    <path d="M14 11 C 19 4 29 4 34 11" stroke-width="1.4"/>
+  </g></symbol>
+  <symbol id="zod-gemini" viewBox="0 0 48 48"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M18 12 V36"/>
+    <path d="M30 12 V36"/>
+    <path d="M15 14 H33"/>
+    <path d="M15 34 H33"/>
+    <path d="M24 16 C 22 22 26 26 24 32" stroke-width="1.4"/>
+  </g></symbol>
+  <symbol id="zod-cancer" viewBox="0 0 48 48"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <circle cx="16" cy="16" r="4"/>
+    <circle cx="32" cy="32" r="4"/>
+    <path d="M20 16 H31"/>
+    <path d="M28 32 H17"/>
+    <path d="M33 13 V19 M30 16 H36" stroke-width="1.4"/>
+    <path d="M15 29 V35 M12 32 H18" stroke-width="1.4"/>
+  </g></symbol>
+  <symbol id="zod-leo" viewBox="0 0 48 48"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M24 15 C 30 15 30 23 24 23 C 18 23 18 15 24 15"/>
+    <path d="M24 23 C 24 31 30 33 35 30"/>
+    <path d="M17 16 L13 13" stroke-width="1.4"/>
+    <path d="M14 20 L10 20" stroke-width="1.4"/>
+    <path d="M16 24 L12 26" stroke-width="1.4"/>
+  </g></symbol>
+  <symbol id="zod-virgo" viewBox="0 0 48 48"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M13 33 V17 L19 25 L25 17 V31"/>
+    <path d="M25 31 C 31 33 34 29 31 25 C 29 23 27 25 29 27"/>
+    <path d="M34 22 C 38 24 38 30 34 32" stroke-width="1.4"/>
+    <path d="M36 24 L34 25 M36 28 L34 29" stroke-width="1.4"/>
+  </g></symbol>
+  <symbol id="zod-libra" viewBox="0 0 48 48"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M12 33 H36"/>
+    <path d="M12 24 H19 Q24 17 29 24 H36"/>
+    <path d="M12 24 V27" stroke-width="1.4"/>
+    <path d="M36 24 V27" stroke-width="1.4"/>
+    <path d="M8 27 C 8 31 16 31 16 27" stroke-width="1.4"/>
+    <path d="M32 27 C 32 31 40 31 40 27" stroke-width="1.4"/>
+  </g></symbol>
+  <symbol id="zod-scorpio" viewBox="0 0 48 48"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M13 33 V17 L19 25 L25 17 V30"/>
+    <path d="M25 30 H33"/>
+    <path d="M30 27 L33 30 L30 33"/>
+    <path d="M37 25 C 40 28 34 28 37 25" stroke-width="1.4"/>
+  </g></symbol>
+  <symbol id="zod-sagittarius" viewBox="0 0 48 48"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M14 34 L34 14"/>
+    <path d="M27 14 H34 V21"/>
+    <path d="M18 24 H30"/>
+    <path d="M15 31 L19 28" stroke-width="1.4"/>
+    <path d="M18 33 L22 30" stroke-width="1.4"/>
+  </g></symbol>
+  <symbol id="zod-capricorn" viewBox="0 0 48 48"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M16 15 L24 32 L31 17"/>
+    <path d="M31 17 C 34 13 31 11 28 14"/>
+    <path d="M33 30 C 35 28 37 30 39 28" stroke-width="1.4"/>
+    <path d="M34 33 C 36 31 38 33 40 31" stroke-width="1.4"/>
+  </g></symbol>
+  <symbol id="zod-aquarius" viewBox="0 0 48 48"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M12 20 L17 17 L22 20 L27 17 L32 20 L37 17"/>
+    <path d="M12 29 L17 26 L22 29 L27 26 L32 29 L37 26"/>
+    <path d="M19 11 C 21 13 17 13 19 11" stroke-width="1.4"/>
+    <path d="M29 11 C 31 13 27 13 29 11" stroke-width="1.4"/>
+  </g></symbol>
+  <symbol id="zod-pisces" viewBox="0 0 48 48"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M11 24 H37"/>
+    <path d="M15 16 C 11 20 11 28 15 32"/>
+    <path d="M33 16 C 37 20 37 28 33 32"/>
+    <path d="M16 19 L18 21" stroke-width="1.4"/>
+    <path d="M32 19 L30 21" stroke-width="1.4"/>
+  </g></symbol>
+</svg>

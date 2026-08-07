@@ -1,0 +1,657 @@
+{
+  "_meta": {
+    "description": "星座引擎确定性回归黄金集，由 astro.compute() 生成并人工校验。若测试失败，说明引擎输出已变更——请确认变更是有意为之，然后更新此文件。",
+    "generated": "2026-08-06",
+    "count": 24
+  },
+  "cases": [
+    {
+      "sign": "白羊座",
+      "date": "2026-01-01",
+      "period_key": "2026-01-01",
+      "scores": {
+        "overall": 69,
+        "love": 79,
+        "career": 63,
+        "wealth": 51,
+        "health": 76
+      },
+      "lucky_color": "海蓝色",
+      "lucky_color_hex": "#2a6f97",
+      "lucky_number": 3,
+      "lucky_direction": "西北",
+      "lucky_item": "檀木梳子",
+      "yi": [
+        "散步放空",
+        "联系老友"
+      ],
+      "ji": [
+        "做大决定",
+        "勉强社交"
+      ],
+      "match_best": "金牛座",
+      "match_worst": "摩羯座"
+    },
+    {
+      "sign": "金牛座",
+      "date": "2026-01-01",
+      "period_key": "2026-01-01",
+      "scores": {
+        "overall": 64,
+        "love": 66,
+        "career": 69,
+        "wealth": 49,
+        "health": 64
+      },
+      "lucky_color": "黑色",
+      "lucky_color_hex": "#3a3a4a",
+      "lucky_number": 8,
+      "lucky_direction": "西北",
+      "lucky_item": "纸质手账",
+      "yi": [
+        "联系老友",
+        "规律三餐"
+      ],
+      "ji": [
+        "与人争执",
+        "钻牛角尖"
+      ],
+      "match_best": "天秤座",
+      "match_worst": "摩羯座"
+    },
+    {
+      "sign": "双子座",
+      "date": "2026-01-01",
+      "period_key": "2026-01-01",
+      "scores": {
+        "overall": 67,
+        "love": 89,
+        "career": 55,
+        "wealth": 69,
+        "health": 62
+      },
+      "lucky_color": "薰衣草",
+      "lucky_color_hex": "#b9a4ff",
+      "lucky_number": 3,
+      "lucky_direction": "西北",
+      "lucky_item": "纸质手账",
+      "yi": [
+        "联系老友",
+        "整理居室"
+      ],
+      "ji": [
+        "拖延重要事",
+        "冲动消费"
+      ],
+      "match_best": "金牛座",
+      "match_worst": "摩羯座"
+    },
+    {
+      "sign": "巨蟹座",
+      "date": "2026-01-01",
+      "period_key": "2026-01-01",
+      "scores": {
+        "overall": 68,
+        "love": 66,
+        "career": 72,
+        "wealth": 66,
+        "health": 87
+      },
+      "lucky_color": "天蓝色",
+      "lucky_color_hex": "#6ec6ff",
+      "lucky_number": 3,
+      "lucky_direction": "东南",
+      "lucky_item": "纸质手账",
+      "yi": [
+        "整理居室",
+        "散步放空"
+      ],
+      "ji": [
+        "熬夜",
+        "盲目跟风"
+      ],
+      "match_best": "射手座",
+      "match_worst": "白羊座"
+    },
+    {
+      "sign": "狮子座",
+      "date": "2026-01-01",
+      "period_key": "2026-01-01",
+      "scores": {
+        "overall": 60,
+        "love": 51,
+        "career": 82,
+        "wealth": 46,
+        "health": 63
+      },
+      "lucky_color": "墨绿",
+      "lucky_color_hex": "#2e6f5e",
+      "lucky_number": 6,
+      "lucky_direction": "东南",
+      "lucky_item": "檀木梳子",
+      "yi": [
+        "规律三餐",
+        "散步放空"
+      ],
+      "ji": [
+        "冲动消费",
+        "盲目跟风"
+      ],
+      "match_best": "天秤座",
+      "match_worst": "摩羯座"
+    },
+    {
+      "sign": "处女座",
+      "date": "2026-01-01",
+      "period_key": "2026-01-01",
+      "scores": {
+        "overall": 71,
+        "love": 77,
+        "career": 83,
+        "wealth": 80,
+        "health": 65
+      },
+      "lucky_color": "薄荷绿",
+      "lucky_color_hex": "#7bd8b6",
+      "lucky_number": 3,
+      "lucky_direction": "西南",
+      "lucky_item": "木制书签",
+      "yi": [
+        "散步放空",
+        "联系老友"
+      ],
+      "ji": [
+        "勉强社交",
+        "钻牛角尖"
+      ],
+      "match_best": "天秤座",
+      "match_worst": "白羊座"
+    },
+    {
+      "sign": "天秤座",
+      "date": "2026-01-01",
+      "period_key": "2026-01-01",
+      "scores": {
+        "overall": 76,
+        "love": 81,
+        "career": 70,
+        "wealth": 80,
+        "health": 52
+      },
+      "lucky_color": "天蓝色",
+      "lucky_color_hex": "#6ec6ff",
+      "lucky_number": 1,
+      "lucky_direction": "西北",
+      "lucky_item": "纸质手账",
+      "yi": [
+        "散步放空",
+        "规律三餐"
+      ],
+      "ji": [
+        "冲动消费",
+        "熬夜"
+      ],
+      "match_best": "射手座",
+      "match_worst": "白羊座"
+    },
+    {
+      "sign": "天蝎座",
+      "date": "2026-01-01",
+      "period_key": "2026-01-01",
+      "scores": {
+        "overall": 63,
+        "love": 75,
+        "career": 47,
+        "wealth": 61,
+        "health": 88
+      },
+      "lucky_color": "青草绿",
+      "lucky_color_hex": "#8fd14f",
+      "lucky_number": 6,
+      "lucky_direction": "西南",
+      "lucky_item": "绿植盆栽",
+      "yi": [
+        "规律三餐",
+        "整理居室"
+      ],
+      "ji": [
+        "钻牛角尖",
+        "拖延重要事"
+      ],
+      "match_best": "射手座",
+      "match_worst": "摩羯座"
+    },
+    {
+      "sign": "射手座",
+      "date": "2026-01-01",
+      "period_key": "2026-01-01",
+      "scores": {
+        "overall": 71,
+        "love": 67,
+        "career": 81,
+        "wealth": 82,
+        "health": 57
+      },
+      "lucky_color": "海蓝色",
+      "lucky_color_hex": "#2a6f97",
+      "lucky_number": 3,
+      "lucky_direction": "东南",
+      "lucky_item": "木制书签",
+      "yi": [
+        "散步放空",
+        "规律三餐"
+      ],
+      "ji": [
+        "拖延重要事",
+        "冲动消费"
+      ],
+      "match_best": "天秤座",
+      "match_worst": "摩羯座"
+    },
+    {
+      "sign": "摩羯座",
+      "date": "2026-01-01",
+      "period_key": "2026-01-01",
+      "scores": {
+        "overall": 74,
+        "love": 85,
+        "career": 70,
+        "wealth": 50,
+        "health": 91
+      },
+      "lucky_color": "海蓝色",
+      "lucky_color_hex": "#2a6f97",
+      "lucky_number": 3,
+      "lucky_direction": "西南",
+      "lucky_item": "木制书签",
+      "yi": [
+        "联系老友",
+        "规律三餐"
+      ],
+      "ji": [
+        "与人争执",
+        "盲目跟风"
+      ],
+      "match_best": "金牛座",
+      "match_worst": "白羊座"
+    },
+    {
+      "sign": "水瓶座",
+      "date": "2026-01-01",
+      "period_key": "2026-01-01",
+      "scores": {
+        "overall": 69,
+        "love": 76,
+        "career": 85,
+        "wealth": 59,
+        "health": 55
+      },
+      "lucky_color": "天蓝色",
+      "lucky_color_hex": "#6ec6ff",
+      "lucky_number": 3,
+      "lucky_direction": "西北",
+      "lucky_item": "木制书签",
+      "yi": [
+        "规律三餐",
+        "散步放空"
+      ],
+      "ji": [
+        "熬夜",
+        "冲动消费"
+      ],
+      "match_best": "射手座",
+      "match_worst": "摩羯座"
+    },
+    {
+      "sign": "双鱼座",
+      "date": "2026-01-01",
+      "period_key": "2026-01-01",
+      "scores": {
+        "overall": 59,
+        "love": 85,
+        "career": 56,
+        "wealth": 45,
+        "health": 65
+      },
+      "lucky_color": "墨绿",
+      "lucky_color_hex": "#2e6f5e",
+      "lucky_number": 6,
+      "lucky_direction": "东南",
+      "lucky_item": "纸质手账",
+      "yi": [
+        "整理居室",
+        "联系老友"
+      ],
+      "ji": [
+        "钻牛角尖",
+        "拖延重要事"
+      ],
+      "match_best": "天秤座",
+      "match_worst": "白羊座"
+    },
+    {
+      "sign": "白羊座",
+      "date": "2026-07-01",
+      "period_key": "2026-07-01",
+      "scores": {
+        "overall": 70,
+        "love": 53,
+        "career": 49,
+        "wealth": 82,
+        "health": 84
+      },
+      "lucky_color": "玫瑰粉",
+      "lucky_color_hex": "#e86a92",
+      "lucky_number": 8,
+      "lucky_direction": "正东",
+      "lucky_item": "香氛蜡烛",
+      "yi": [
+        "整理居室",
+        "联系老友"
+      ],
+      "ji": [
+        "勉强社交",
+        "钻牛角尖"
+      ],
+      "match_best": "天秤座",
+      "match_worst": "摩羯座"
+    },
+    {
+      "sign": "金牛座",
+      "date": "2026-07-01",
+      "period_key": "2026-07-01",
+      "scores": {
+        "overall": 66,
+        "love": 81,
+        "career": 71,
+        "wealth": 60,
+        "health": 61
+      },
+      "lucky_color": "暖橘色",
+      "lucky_color_hex": "#ff8a5b",
+      "lucky_number": 3,
+      "lucky_direction": "正东",
+      "lucky_item": "暖光小灯",
+      "yi": [
+        "联系老友",
+        "散步放空"
+      ],
+      "ji": [
+        "与人争执",
+        "钻牛角尖"
+      ],
+      "match_best": "射手座",
+      "match_worst": "摩羯座"
+    },
+    {
+      "sign": "双子座",
+      "date": "2026-07-01",
+      "period_key": "2026-07-01",
+      "scores": {
+        "overall": 63,
+        "love": 53,
+        "career": 76,
+        "wealth": 56,
+        "health": 68
+      },
+      "lucky_color": "薄荷绿",
+      "lucky_color_hex": "#7bd8b6",
+      "lucky_number": 7,
+      "lucky_direction": "正西",
+      "lucky_item": "香氛蜡烛",
+      "yi": [
+        "整理居室",
+        "规律三餐"
+      ],
+      "ji": [
+        "冲动消费",
+        "熬夜"
+      ],
+      "match_best": "金牛座",
+      "match_worst": "白羊座"
+    },
+    {
+      "sign": "巨蟹座",
+      "date": "2026-07-01",
+      "period_key": "2026-07-01",
+      "scores": {
+        "overall": 68,
+        "love": 80,
+        "career": 55,
+        "wealth": 54,
+        "health": 76
+      },
+      "lucky_color": "青草绿",
+      "lucky_color_hex": "#8fd14f",
+      "lucky_number": 8,
+      "lucky_direction": "西南",
+      "lucky_item": "红绳手链",
+      "yi": [
+        "规律三餐",
+        "散步放空"
+      ],
+      "ji": [
+        "做大决定",
+        "勉强社交"
+      ],
+      "match_best": "射手座",
+      "match_worst": "摩羯座"
+    },
+    {
+      "sign": "狮子座",
+      "date": "2026-07-01",
+      "period_key": "2026-07-01",
+      "scores": {
+        "overall": 79,
+        "love": 91,
+        "career": 87,
+        "wealth": 66,
+        "health": 64
+      },
+      "lucky_color": "青草绿",
+      "lucky_color_hex": "#8fd14f",
+      "lucky_number": 8,
+      "lucky_direction": "西南",
+      "lucky_item": "香氛蜡烛",
+      "yi": [
+        "联系老友",
+        "散步放空"
+      ],
+      "ji": [
+        "盲目跟风",
+        "拖延重要事"
+      ],
+      "match_best": "天秤座",
+      "match_worst": "白羊座"
+    },
+    {
+      "sign": "处女座",
+      "date": "2026-07-01",
+      "period_key": "2026-07-01",
+      "scores": {
+        "overall": 73,
+        "love": 79,
+        "career": 76,
+        "wealth": 70,
+        "health": 77
+      },
+      "lucky_color": "薄荷绿",
+      "lucky_color_hex": "#7bd8b6",
+      "lucky_number": 2,
+      "lucky_direction": "正西",
+      "lucky_item": "红色烛台",
+      "yi": [
+        "散步放空",
+        "联系老友"
+      ],
+      "ji": [
+        "钻牛角尖",
+        "勉强社交"
+      ],
+      "match_best": "天秤座",
+      "match_worst": "摩羯座"
+    },
+    {
+      "sign": "天秤座",
+      "date": "2026-07-01",
+      "period_key": "2026-07-01",
+      "scores": {
+        "overall": 62,
+        "love": 54,
+        "career": 65,
+        "wealth": 59,
+        "health": 58
+      },
+      "lucky_color": "粉色",
+      "lucky_color_hex": "#ff8fb1",
+      "lucky_number": 8,
+      "lucky_direction": "正东",
+      "lucky_item": "红色烛台",
+      "yi": [
+        "整理居室",
+        "联系老友"
+      ],
+      "ji": [
+        "盲目跟风",
+        "与人争执"
+      ],
+      "match_best": "金牛座",
+      "match_worst": "摩羯座"
+    },
+    {
+      "sign": "天蝎座",
+      "date": "2026-07-01",
+      "period_key": "2026-07-01",
+      "scores": {
+        "overall": 71,
+        "love": 59,
+        "career": 69,
+        "wealth": 80,
+        "health": 87
+      },
+      "lucky_color": "墨绿",
+      "lucky_color_hex": "#2e6f5e",
+      "lucky_number": 3,
+      "lucky_direction": "正东",
+      "lucky_item": "红绳手链",
+      "yi": [
+        "规律三餐",
+        "整理居室"
+      ],
+      "ji": [
+        "与人争执",
+        "熬夜"
+      ],
+      "match_best": "射手座",
+      "match_worst": "白羊座"
+    },
+    {
+      "sign": "射手座",
+      "date": "2026-07-01",
+      "period_key": "2026-07-01",
+      "scores": {
+        "overall": 69,
+        "love": 71,
+        "career": 77,
+        "wealth": 49,
+        "health": 60
+      },
+      "lucky_color": "暖橘色",
+      "lucky_color_hex": "#ff8a5b",
+      "lucky_number": 3,
+      "lucky_direction": "西南",
+      "lucky_item": "暖光小灯",
+      "yi": [
+        "散步放空",
+        "整理居室"
+      ],
+      "ji": [
+        "勉强社交",
+        "做大决定"
+      ],
+      "match_best": "金牛座",
+      "match_worst": "白羊座"
+    },
+    {
+      "sign": "摩羯座",
+      "date": "2026-07-01",
+      "period_key": "2026-07-01",
+      "scores": {
+        "overall": 60,
+        "love": 67,
+        "career": 56,
+        "wealth": 49,
+        "health": 77
+      },
+      "lucky_color": "墨绿",
+      "lucky_color_hex": "#2e6f5e",
+      "lucky_number": 3,
+      "lucky_direction": "西南",
+      "lucky_item": "红色烛台",
+      "yi": [
+        "散步放空",
+        "整理居室"
+      ],
+      "ji": [
+        "与人争执",
+        "熬夜"
+      ],
+      "match_best": "射手座",
+      "match_worst": "白羊座"
+    },
+    {
+      "sign": "水瓶座",
+      "date": "2026-07-01",
+      "period_key": "2026-07-01",
+      "scores": {
+        "overall": 63,
+        "love": 82,
+        "career": 65,
+        "wealth": 64,
+        "health": 56
+      },
+      "lucky_color": "暖橘色",
+      "lucky_color_hex": "#ff8a5b",
+      "lucky_number": 7,
+      "lucky_direction": "正西",
+      "lucky_item": "红色烛台",
+      "yi": [
+        "规律三餐",
+        "整理居室"
+      ],
+      "ji": [
+        "盲目跟风",
+        "勉强社交"
+      ],
+      "match_best": "天秤座",
+      "match_worst": "白羊座"
+    },
+    {
+      "sign": "双鱼座",
+      "date": "2026-07-01",
+      "period_key": "2026-07-01",
+      "scores": {
+        "overall": 58,
+        "love": 83,
+        "career": 51,
+        "wealth": 55,
+        "health": 63
+      },
+      "lucky_color": "暖橘色",
+      "lucky_color_hex": "#ff8a5b",
+      "lucky_number": 7,
+      "lucky_direction": "西南",
+      "lucky_item": "红色烛台",
+      "yi": [
+        "联系老友",
+        "散步放空"
+      ],
+      "ji": [
+        "做大决定",
+        "钻牛角尖"
+      ],
+      "match_best": "射手座",
+      "match_worst": "摩羯座"
+    }
+  ]
+}

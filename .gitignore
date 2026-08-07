@@ -1,0 +1,14 @@
+.env
+__pycache__/
+*.pyc
+data/
+.venv/
+venv/
+# 运行日志（含请求路径/IP 等，勿提交）
+*.log
+backups/
+# 本地缓存与本地设置
+.pytest_cache/
+.claude/settings.local.json
+# 评估运行产物（<suite>-时间戳.json）不入库；baseline 与 archive/ 保留
+evals/results/*-????????-??????.json

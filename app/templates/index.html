@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}首页{% endblock %}
+
+{% block content %}
+  {% if user %}
+    <section class="hero hero-small">
+      <h1>欢迎回来，{{ user.username }}</h1>
+      <p class="muted">今天想聊聊梦，还是聊聊心情？</p>
+      <div class="hero-actions">
+        <a href="/dream" class="btn btn-primary"><svg class="ic"><use href="/static/ui.svg#i-moon"/></svg>记一个梦</a>
+        <a href="/journal" class="btn btn-ghost"><svg class="ic"><use href="/static/ui.svg#i-book"/></svg>写情绪日记</a>
+        <a href="/horoscope" class="btn btn-ghost"><svg class="ic"><use href="/static/ui.svg#i-sparkles"/></svg>今日运势</a>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="stat-card">
+        <div class="stat-num">{{ stats.dreams }}</div>
+        <div class="stat-label">篇解梦</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">{{ stats.journals }}</div>
+        <div class="stat-label">篇日记</div>
+      </div>
+    </section>
+  {% else %}
+    <section class="hero">
+      <div class="hero-mark"><svg class="ic"><use href="/static/ui.svg#i-moon"/></svg></div>
+      <h1>梦语</h1>
+      <p class="hero-sub">AI 解梦 · 情绪日记<br>把夜里与心里的波澜，温柔地安放。</p>
+      <div class="hero-actions">
+        <a href="/register" class="btn btn-primary">开始使用</a>
+        <a href="/login" class="btn btn-ghost"><svg class="ic"><use href="/static/ui.svg#i-login"/></svg>登录</a>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="feature-card">
+        <div class="feature-emoji"><svg class="ic"><use href="/static/ui.svg#i-moon"/></svg></div>
+        <h3>解梦</h3>
+        <p>写下你的梦境，让 AI 陪你一起读懂那些潜意识的隐喻与情绪。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-emoji"><svg class="ic"><use href="/static/ui.svg#i-book"/></svg></div>
+        <h3>情绪日记</h3>
+        <p>记录此刻的感受，收获一个温暖、稳定的倾听与陪伴。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-emoji"><svg class="ic"><use href="/static/ui.svg#i-sparkles"/></svg></div>
+        <h3>星座运势</h3>
+        <p>选择你的星座，获取今日综合、爱情、事业、财富的温柔解读。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-emoji"><svg class="ic"><use href="/static/ui.svg#i-lock"/></svg></div>
+        <h3>仅你可见</h3>
+        <p>账号登录，数据保存在本地，你的梦与心事只属于你自己。</p>
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}

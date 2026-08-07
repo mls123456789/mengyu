@@ -1,0 +1,11 @@
+{# 解梦 / 情绪日记 共享骨架：页面标题 + caller（各自的 compose 表单）+ 列表/空态/首屏 JSON #}
+{% macro entry_page(icon, title, section_title, list_id, empty_id, empty_text, json_id, json_data) %}
+  <h1 class="page-title entrance"><svg class="ic"><use href="/static/ui.svg#{{ icon }}"/></svg> {{ title }}</h1>
+
+  {{ caller() }}
+
+  <h2 class="section-title has-rule">{{ section_title }}</h2>
+  <p class="empty muted" id="{{ empty_id }}" hidden>{{ empty_text }}</p>
+  <ul class="entry-list" id="{{ list_id }}"></ul>
+  <script id="{{ json_id }}" type="application/json">{{ json_data | tojson }}</script>
+{% endmacro %}

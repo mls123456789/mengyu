@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}梦语{% endblock %} · mengyu</title>
+  <meta name="description" content="梦语 — AI 解梦与情绪日记，把夜里与心里的波澜温柔安放。">
+  <meta name="theme-color" content="#171331">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <!-- 关键字体预加载：默认(auto)主题在现代浏览器解析为 c(极光)=Plus Jakarta Sans，
+       故预加载正文 400 与高频 600；woff2 走 immutable 缓存，二次访问零成本。-->
+  <link rel="preload" as="font" type="font/woff2" href="/static/fonts/plus-jakarta-sans-400-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/static/fonts/plus-jakarta-sans-600-latin.woff2" crossorigin>
+  <link rel="stylesheet" href="/static/fonts.css">
+  <script nonce="{{ request.state.csp_nonce }}">
+    // 防 FOUC：页面解析时立即按 localStorage + 浏览器能力设定主题
+    (function () {
+      try {
+        var k = "mengyu-theme", v = localStorage.getItem(k) || "auto";
+        var canC = !!(window.CSS && CSS.supports && CSS.supports("color", "color-mix(in srgb, red, blue)"));
+        var t = (v === "a" || v === "b" || v === "c") ? v : (canC ? "c" : "b");
+        document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "b");
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">跳到主内容</a>
+  <div id="aria-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <div class="bokeh" aria-hidden="true">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+  </div>
+
+  <header class="nav">
+    <a class="brand" href="/">
+      <span class="brand-mark">☾</span>
+      <span class="brand-name">梦语</span>
+    </a>
+    <button type="button" class="nav-toggle" aria-label="展开导航菜单" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav-links">
+      <a href="/" class="{{ 'active' if request.url.path == '/' else '' }}">首页</a>
+      <a href="/dream" class="{{ 'active' if request.url.path.startswith('/dream') else '' }}">解梦</a>
+      <a href="/journal" class="{{ 'active' if request.url.path.startswith('/journal') else '' }}">情绪日记</a>
+      <a href="/horoscope" class="{{ 'active' if request.url.path.startswith('/horoscope') else '' }}">星座运势</a>
+    </nav>
+    <div class="nav-user">
+      {# 主题切换：icon 触发 + 下拉（当前项打勾） #}
+      <div class="menu" id="theme-menu">
+        <button type="button" class="menu-trigger" id="theme-trigger" aria-haspopup="menu" aria-label="切换主题" title="主题">
+          <svg class="ic"><use href="/static/ui.svg#i-palette"/></svg>
+        </button>
+        <div class="menu-popover" role="menu" aria-label="主题">
+          <button type="button" class="menu-item" data-theme-val="a"><span>简约</span><svg class="ic menu-check"><use href="/static/ui.svg#i-check"/></svg></button>
+          <button type="button" class="menu-item" data-theme-val="auto"><span>跟随系统</span><svg class="ic menu-check"><use href="/static/ui.svg#i-check"/></svg></button>
+          <button type="button" class="menu-item" data-theme-val="b"><span>奢华</span><svg class="ic menu-check"><use href="/static/ui.svg#i-check"/></svg></button>
+          <button type="button" class="menu-item" data-theme-val="c"><span>极光</span><svg class="ic menu-check"><use href="/static/ui.svg#i-check"/></svg></button>
+        </div>
+      </div>
+      {% if user %}
+        {# 用户菜单 #}
+        <div class="menu" id="user-menu">
+          <button type="button" class="menu-trigger" id="user-trigger" aria-haspopup="menu">
+            <svg class="ic"><use href="/static/ui.svg#i-user"/></svg>
+            <span class="user-name">{{ user.username }}</span>
+            <svg class="ic ic-chev"><use href="/static/ui.svg#i-chevron-down"/></svg>
+          </button>
+          <div class="menu-popover" role="menu">
+            <a class="menu-item" href="/me"><svg class="ic"><use href="/static/ui.svg#i-user"/></svg><span>个人中心</span></a>
+            <form method="post" action="/logout">
+              <button type="submit" class="menu-item" data-noloading="1"><svg class="ic"><use href="/static/ui.svg#i-logout"/></svg><span>登出</span></button>
+            </form>
+          </div>
+        </div>
+      {% else %}
+        <a href="/login" class="btn btn-ghost btn-sm"><svg class="ic"><use href="/static/ui.svg#i-login"/></svg>登录</a>
+        <a href="/register" class="btn btn-primary btn-sm">注册</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="container" id="main-content">
+    {% if not llm_ready %}
+      <div class="banner">
+        ⚠️ 当前未配置 LLM（缺少 <code>LLM_API_KEY</code> 等）。解梦与情绪回应将不可用，请先在 <code>.env</code> 中配置。
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <span>梦语 · AI 解梦与情绪日记</span>
+    <span class="muted">愿你被温柔接住</span>
+  </footer>
+
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

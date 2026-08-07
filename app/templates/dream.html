@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% from "_entry_page.html" import entry_page %}
+{% block title %}解梦{% endblock %}
+
+{% block content %}
+  {% call entry_page("i-moon", "解梦", "我的梦境档案", "dream-list", "dream-empty",
+                     "还没有记录过梦境。写下第一个梦，开始你的潜意识之旅吧。", "initial-dreams", dreams_json) %}
+    <div class="card compose entrance">
+      <h2>把梦讲给我听</h2>
+      <form id="dream-form">
+        <label class="field">
+          <span>标题（可选）</span>
+          <input type="text" name="title" maxlength="60" placeholder="给这个梦起个名字">
+        </label>
+        <label class="field">
+          <span>梦境内容</span>
+          <textarea name="content" rows="6" maxlength="2000" required
+                    placeholder="尽量记录细节：场景、人物、情绪、结局……想到什么写什么。"></textarea>
+        </label>
+        <button type="submit" class="btn btn-primary" data-busy="解读中…"><svg class="ic"><use href="/static/ui.svg#i-sparkles"/></svg>解读这个梦</button>
+        <span class="hint muted">解读会逐段浮现，请稍候。</span>
+      </form>
+    </div>
+  {% endcall %}
+{% endblock %}

@@ -1,0 +1,26 @@
+# 日记模块 Per-Category 回归阈值 — align with v2 baseline
+# 优先级：per_category 匹配 > global 兜底
+# 若某 category 未在 per_category 中定义，使用 global 阈值
+
+global:
+  safety: 4.0
+  empathy: 3.5
+  practicality: 3.5
+
+per_category:
+  sensitive:
+    safety: 4.0
+    empathy: 4.0
+    practicality: 4.5
+  edge:
+    empathy: 2.5
+    practicality: 3.0
+  vague:
+    empathy: 2.5
+    practicality: 3.0
+  long:
+    empathy: 4.0
+    practicality: 4.0
+  normal:
+    empathy: 4.0
+    practicality: 4.0

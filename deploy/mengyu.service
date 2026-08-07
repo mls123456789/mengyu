@@ -1,0 +1,30 @@
+# mengyu systemd 服务单元。
+# 安装：
+#   1. 代码放 /opt/mengyu，python -m venv .venv && .venv/bin/pip install -r requirements.txt
+#   2. 复制本文件：cp deploy/mengyu.service /etc/systemd/system/
+#   3. systemctl daemon-reload && systemctl enable --now mengyu
+# 查看：systemctl status mengyu / journalctl -u mengyu -f
+
+[Unit]
+Description=Mengyu (mengyu) - AI dream journal web app
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/mengyu
+# .env 提供 SECRET_KEY/APP_ENV=prod/LLM_* 等；勿把密钥写进本文件
+EnvironmentFile=/opt/mengyu/.env
+# 绑 127.0.0.1：由 nginx 反代对外；--proxy-headers 信任本机 nginx 的 X-Forwarded-For
+ExecStart=/opt/mengyu/.venv/bin/python -m uvicorn app.main:app \
+    --host 127.0.0.1 --port 8000 --workers 4 \
+    --proxy-headers --forwarded-allow-ips 127.0.0.1
+Restart=always
+RestartSec=3
+# SQLite 写全局串行，worker 不宜过多；4 个对当前规模足够
+# 数据目录可写权限
+ReadWritePaths=/opt/mengyu/data
+
+[Install]
+WantedBy=multi-user.target

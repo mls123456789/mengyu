@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}个人中心{% endblock %}
+
+{% block content %}
+  <h1 class="page-title entrance"><svg class="ic"><use href="/static/ui.svg#i-user"/></svg> 个人中心</h1>
+
+  <div class="card me-card entrance">
+    <div class="me-profile">
+      <div class="me-avatar"><svg class="ic"><use href="/static/ui.svg#i-user"/></svg></div>
+      <div>
+        <div class="me-name">{{ profile.username }}</div>
+        <div class="muted">加入于 {{ profile.created_at }}</div>
+      </div>
+    </div>
+    <div class="me-stats">
+      <div class="me-stat">
+        <div class="me-stat-num">{{ stats.dreams }}</div>
+        <div class="me-stat-label">篇解梦</div>
+      </div>
+      <div class="me-stat">
+        <div class="me-stat-num">{{ stats.journals }}</div>
+        <div class="me-stat-label">篇日记</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card entrance">
+    <h2 class="me-section-title">星座偏好</h2>
+    <p class="muted">设置默认星座，用于星座运势。</p>
+    <form method="post" action="/me/sign" class="me-sign-form">
+      <select name="sign" aria-label="默认星座">
+        <option value="">—— 未设置 ——</option>
+        {% for s in sign_names %}
+          <option value="{{ s }}" {{ 'selected' if s == profile.sign else '' }}>{{ s }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-primary btn-sm">保存</button>
+    </form>
+  </div>
+
+  <div class="card entrance">
+    <h2 class="me-section-title">外观主题</h2>
+    <p class="muted">选择喜欢的视觉风格，会记住你的偏好。</p>
+    <div class="theme-switch me-theme-row" id="me-theme">
+      <button type="button" data-theme-val="a">简约</button>
+      <button type="button" data-theme-val="auto">跟随系统</button>
+      <button type="button" data-theme-val="b">奢华</button>
+      <button type="button" data-theme-val="c">极光</button>
+    </div>
+  </div>
+
+  <div class="card entrance">
+    <h2 class="me-section-title">账号</h2>
+    <form method="post" action="/logout">
+      <button type="submit" class="btn btn-ghost" data-noloading="1"><svg class="ic"><use href="/static/ui.svg#i-logout"/></svg>退出登录</button>
+    </form>
+  </div>
+
+  <div class="card entrance">
+    <h2 class="me-section-title">注销账号</h2>
+    <p class="muted">永久删除你的账号及所有解梦、日记记录，此操作无法撤销。</p>
+    <button type="button" class="btn btn-danger btn-sm" id="btn-delete-account">注销账号</button>
+  </div>
+{% endblock %}

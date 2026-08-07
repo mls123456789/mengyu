@@ -1,0 +1,108 @@
+# 评估体系 CI 门禁
+#
+# 触发条件：
+#   - schedule: 每日 02:17 UTC 跑确定性 pytest（单元测试 + 星座引擎黄金集）+ 全量 LLM suite + regression check
+#   - pull_request: PR 触及 app/ evals/ tests/ requirements.txt 时跑全量 LLM suite + regression check
+#   - workflow_dispatch: 手动触发
+#
+# 阻断规则：regression 阈值未过 / judge 覆盖率不足 / 脚本错误 → 非零 exit → 阻止 PR 合并
+# Secrets：LLM_API_KEY 必填（preflight 快速失败）；LLM_BASE_URL / LLM_MODEL 可选（有默认值）
+
+name: Eval Suite
+
+on:
+  schedule:
+    # 每日 UTC 02:17（避开整点/半点高峰），北京时间约 10:17
+    - cron: '17 2 * * *'
+  pull_request:
+    paths:
+      - 'app/**'
+      - 'evals/**'
+      - 'tests/**'
+      - 'requirements.txt'
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# 同一 PR 的旧运行可被新提交取消；定时/手动任务不取消（避免浪费已投入的 LLM 调用）
+concurrency:
+  group: evals-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  evals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      # ------------------------------------------------------------------
+      # 0. 环境准备
+      # ------------------------------------------------------------------
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Secrets 缺失时快速失败（3 秒），而非烧完一遍 LLM 才报 "no valid scores"
+      - name: Preflight — LLM secrets 检查
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+        run: |
+          if [ -z "$LLM_API_KEY" ]; then
+            echo "::error::LLM_API_KEY 未配置：Settings → Secrets and variables → Actions"
+            exit 1
+          fi
+          echo "LLM_API_KEY 已注入（${#LLM_API_KEY} 字符）"
+
+      # ------------------------------------------------------------------
+      # 1. 确定性回归测试（仅每日定时任务，不依赖 LLM）
+      #    tests/ = 单元/集成；evals 黄金集 = 星座引擎 24 条精确回归
+      # ------------------------------------------------------------------
+      - name: Deterministic suite (pytest — schedule only)
+        if: github.event_name == 'schedule'
+        run: |
+          echo "=== 确定性回归测试（单元测试 + 星座引擎黄金集）==="
+          pytest tests/ evals/suites/horoscope/test_horoscope_engine.py -v --tb=short
+
+      # ------------------------------------------------------------------
+      # 2. 全量 LLM-as-Judge 评估 + 回归门禁
+      #    --regression-check 复用当次运行结果判阈值（不重跑）
+      # ------------------------------------------------------------------
+      - name: LLM eval — dream
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_BASE_URL: ${{ secrets.LLM_BASE_URL || 'https://open.bigmodel.cn/api/paas/v4' }}
+          LLM_MODEL: ${{ secrets.LLM_MODEL || 'glm-4-plus' }}
+        run: python evals/harness/runner.py --suite dream --parallel --regression-check
+
+      - name: LLM eval — journal
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_BASE_URL: ${{ secrets.LLM_BASE_URL || 'https://open.bigmodel.cn/api/paas/v4' }}
+          LLM_MODEL: ${{ secrets.LLM_MODEL || 'glm-4-plus' }}
+        run: python evals/harness/runner.py --suite journal --parallel --regression-check
+
+      - name: LLM eval — horoscope
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_BASE_URL: ${{ secrets.LLM_BASE_URL || 'https://open.bigmodel.cn/api/paas/v4' }}
+          LLM_MODEL: ${{ secrets.LLM_MODEL || 'glm-4-plus' }}
+        run: python evals/harness/runner.py --suite horoscope --parallel --regression-check
+
+      # ------------------------------------------------------------------
+      # 3. Token 用量统计（即使前面步骤失败也输出）
+      # ------------------------------------------------------------------
+      - name: Token usage stats
+        if: always()
+        run: python evals/harness/token_stats.py

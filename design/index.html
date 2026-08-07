@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<!--
+  梦语 · 视觉小样索引 — 三个方向预览对比
+  用浏览器直接打开本文件 (file://) 即可逐个查看。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>梦语 · 视觉小样对比</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0e0b1c; --text:#eceaf6; --muted:#a9a3c7;
+    --gold:#e7c878; --accent:#b9a4ff;
+    --border:rgba(255,255,255,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Plus Jakarta Sans','Noto Sans SC',sans-serif;color:var(--text);
+    background:
+      radial-gradient(60% 50% at 12% 0%, rgba(109,74,255,.25), transparent 60%),
+      radial-gradient(50% 45% at 100% 100%, rgba(45,212,191,.16), transparent 60%),
+      linear-gradient(180deg,#0e0b1c,#161228);
+    min-height:100vh;padding:64px clamp(18px,5vw,48px);}
+  .wrap{max-width:1080px;margin:0 auto;}
+  header{text-align:center;margin-bottom:48px;}
+  .eyebrow{font-size:11px;letter-spacing:.4em;text-transform:uppercase;
+    color:var(--gold);font-weight:600;margin-bottom:14px;}
+  h1{font-family:'Noto Serif SC',serif;font-weight:700;font-size:clamp(28px,5vw,46px);
+    letter-spacing:.04em;margin-bottom:12px;}
+  h1 .a{background:linear-gradient(120deg,#ff6b9d,#a78bfa,#34d6c0);
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .lede{color:var(--muted);font-size:15px;max-width:40em;margin:0 auto;line-height:1.7;}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  @media(max-width:860px){.grid{grid-template-columns:1fr;}}
+  a.card{display:block;text-decoration:none;color:inherit;border-radius:24px;
+    padding:0;overflow:hidden;border:1px solid var(--border);
+    background:rgba(255,255,255,.04);backdrop-filter:blur(12px);
+    transition:transform .25s, box-shadow .3s, border-color .3s;}
+  a.card:hover{transform:translateY(-6px);border-color:rgba(255,255,255,.28);
+    box-shadow:0 22px 50px rgba(0,0,0,.4);}
+  .thumb{height:200px;position:relative;overflow:hidden;}
+  .t-a{background:linear-gradient(160deg,#100e16,#1c1830);}
+  .t-a::after{content:"♈";position:absolute;inset:0;display:grid;place-items:center;
+    font-size:96px;background:linear-gradient(150deg,#e3c27e,#c8a96a 60%,#9c7e44);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 22px rgba(200,169,106,.3));}
+  .t-b{background:linear-gradient(160deg,#171331,#33235e);}
+  .t-b::after{content:"♈";position:absolute;inset:0;display:grid;place-items:center;
+    font-size:96px;background:linear-gradient(150deg,#f6dd92,#e7c878 55%,#b88a3e);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 22px rgba(246,221,146,.5));}
+  .t-c{background:
+    radial-gradient(60% 80% at 10% 10%,rgba(255,107,157,.5),transparent 60%),
+    radial-gradient(60% 80% at 100% 90%,rgba(52,214,192,.5),transparent 60%),
+    linear-gradient(160deg,#0c0a18,#1a1530);}
+  .t-c::after{content:"♈";position:absolute;inset:0;display:grid;place-items:center;
+    font-size:96px;background:linear-gradient(135deg,#ff6b9d,#a78bfa 50%,#34d6c0);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 22px rgba(167,139,250,.55));}
+  .body{padding:24px 22px 26px;}
+  .tag{font-size:10px;letter-spacing:.3em;text-transform:uppercase;font-weight:700;
+    margin-bottom:12px;}
+  .body.a .tag{color:#e3c27e;} .body.b .tag{color:#e7c878;} .body.c .tag{color:#c4b5fd;}
+  h2{font-family:'Noto Serif SC',serif;font-size:20px;font-weight:700;margin-bottom:8px;}
+  p{font-size:13.5px;color:var(--muted);line-height:1.7;margin-bottom:18px;}
+  .open{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;
+    color:var(--text);padding:11px 18px;border-radius:999px;border:1px solid var(--border);
+    background:rgba(255,255,255,.05);}
+  a.card:hover .open{background:rgba(255,255,255,.12);}
+  .foot{text-align:center;margin-top:44px;color:var(--muted);font-size:12px;letter-spacing:.1em;}
+  .foot span{color:var(--gold);}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="eyebrow">梦语 · Mengyu · Visual Direction</div>
+      <h1>三个视觉方向 · <span class="a">请你来选</span></h1>
+      <p class="lede">同一份白羊座今日运势数据，三种视觉语言。点击任意卡片在浏览器中打开完整小样，逐个对比后告诉我们要走哪个方向。</p>
+    </header>
+
+    <div class="grid">
+      <a class="card" href="mock-A-editorial.html">
+        <div class="thumb t-a"></div>
+        <div class="body a">
+          <div class="tag">A · Editorial</div>
+          <h2>极简编辑风</h2>
+          <p>衬线大标题、大量留白、发丝分割线、墨色＋单一点缀金；四维用横向 2px 细条＋大号编辑体数字。气质如 Co-Star / The Pattern。</p>
+          <span class="open">打开预览 →</span>
+        </div>
+      </a>
+
+      <a class="card" href="mock-B-mystic.html">
+        <div class="thumb t-b"></div>
+        <div class="body b">
+          <div class="tag">B · Mystic Luxury</div>
+          <h2>神秘奢华·升级</h2>
+          <p>延续深紫玻璃基调，综合指数做成带刻度的金箔 SVG 圆环，金色辉光、星空背景，层级更精致统一。</p>
+          <span class="open">打开预览 →</span>
+        </div>
+      </a>
+
+      <a class="card" href="mock-C-aurora.html">
+        <div class="thumb t-c"></div>
+        <div class="body c">
+          <div class="tag">C · Aurora Glass</div>
+          <h2>现代极光玻璃</h2>
+          <p>极光渐变色块背景、干净玻璃、现代无衬线、分段进度条、胶囊 chip；四维各自鲜亮类别色，像高端 App 仪表盘。</p>
+          <span class="open">打开预览 →</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="foot">三个小样均为自包含单文件 · 内联 SVG (图标集 <span>Lucide · ISC</span>) · Google Fonts</div>
+  </div>
+</body>
+</html>

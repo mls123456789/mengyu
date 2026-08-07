@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}星座运势{% endblock %}
+
+{% block content %}
+  {% set meta = sign_meta[my_sign] if my_sign and sign_meta.get(my_sign) else none %}
+
+  <h1 class="page-title entrance"><svg class="ic"><use href="/static/ui.svg#i-sparkles"/></svg> 星座运势</h1>
+
+  <div class="card hs-hero entrance" id="horoscope-page">
+    <div class="hs-head">
+      <div class="hs-signbox">
+        {% if my_sign and meta %}
+          <span class="hs-sym"><svg class="zod-ic"><use href="/static/zod.svg#zod-{{ meta.icon }}"/></svg></span>
+          <div class="hs-sign-info">
+            <div class="hs-name">{{ my_sign }}</div>
+            <div class="hs-meta muted">{{ meta.element }}象 · 守护星 {{ meta.ruler }} · {{ meta.keyword }}</div>
+          </div>
+        {% else %}
+          <span class="hs-sym dim"><svg class="ic"><use href="/static/ui.svg#i-sparkles"/></svg></span>
+          <div class="hs-sign-info">
+            <div class="hs-name muted">尚未选择星座</div>
+            <div class="hs-meta muted">从下方选一个，开始查看运势</div>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="period-tabs">
+        {% for p, label in periods %}
+          <button type="button" class="period-tab {{ 'active' if p == period else '' }}"
+                  data-period="{{ p }}" data-label="{{ label }}">{{ label }}</button>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="sign-label">选择 / 切换星座</div>
+    <div class="sign-grid">
+      {% for name, rng in signs %}
+        {% set m = sign_meta[name] %}
+        <button type="button" class="sign-btn {{ 'active' if name == my_sign else '' }}"
+                data-sign="{{ name }}" data-element="{{ m.element }}"
+                data-ruler="{{ m.ruler }}" data-keyword="{{ m.keyword }}">
+          <span class="sign-sym"><svg class="zod-ic"><use href="/static/zod.svg#zod-{{ m.icon }}"/></svg></span>
+          <span class="sign-name">{{ name }}</span>
+          <span class="sign-date muted">{{ rng }}</span>
+        </button>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div id="fortune-target"></div>
+
+  {# 初始数据（缓存的分段运势，供前端渲染） #}
+  <script id="initial-fortune" type="application/json">{{ sections | tojson }}</script>
+  <script nonce="{{ request.state.csp_nonce }}">
+    window.__sign = {{ my_sign | tojson }};
+    window.__period = {{ period | tojson }};
+    window.__periodLabel = {{ period_human | tojson }};
+  </script>
+{% endblock %}

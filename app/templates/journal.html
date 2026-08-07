@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% from "_entry_page.html" import entry_page %}
+{% block title %}情绪日记{% endblock %}
+
+{% block content %}
+  {% call entry_page("i-book", "情绪日记", "过往日记", "journal-list", "journal-empty",
+                     "还没有日记。试着写下此刻，让梦语陪你一会儿。", "initial-journals", journals_json) %}
+    <div class="card compose entrance">
+      <h2>今天心情怎么样？</h2>
+      <form id="journal-form">
+        <label class="field">
+          <span>此刻的情绪</span>
+          <select name="mood">
+            <option value="">—— 选择一个 ——</option>
+            {% for m in mood_options %}
+              <option value="{{ m }}">{{ m }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label class="field">
+          <span>想说的话</span>
+          <textarea name="content" rows="6" maxlength="2000" required
+                    placeholder="发生了什么？你感受到了什么？不用完整，真实就好。"></textarea>
+        </label>
+        <button type="submit" class="btn btn-primary" data-busy="思考中…"><svg class="ic"><use href="/static/ui.svg#i-send"/></svg>记下此刻</button>
+        <span class="hint muted">梦语会逐段回应你。</span>
+      </form>
+    </div>
+  {% endcall %}
+{% endblock %}
