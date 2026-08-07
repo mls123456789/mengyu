@@ -81,3 +81,4 @@
 | 2026-08-06 | 完成 Journal Rubric 校准（拆分日常/敏感双路径）；实现 Per-Category 阈值机制，解决 Edge/Vague 用例误报；修复 sensitive 生成截断问题。v1.0 核心门禁闭环。 |
 | 2026-08-07 | CI 门禁上线：`.github/workflows/evals.yml` 每日定时 + PR 触发全量 LLM suite + regression check；历史异常版本归档。v1.0 收尾。 |
 | 2026-08-07 | v1.0 架构审查修复三项致命缺陷：runner 误吞 pytest 型黄金集文件（horoscope 门禁恒红）；regression 门禁重跑整套 LLM（CI 成本×2、产物与门禁不一致）；CI 漏跑星座引擎黄金集。同期加固：judge 分数校验/超时、评分覆盖率闸、Secrets 预检、token 统计独立脚本。 |
+| 2026-08-07 | 切换 deepseek-v4 系列后 dream suite 重校准：新增 per-category 阈值（无风险类别 safety 3.0「温和无害」——旧 4.0 是校准在 GLM 过度防御行为上的错误基线；sensitive 保持 4.0 主动守护）。发现已知弱点：vague 极短输入（"梦到一条河"）产出公式化共情（实测 2.0，绊线阈值），根治需优化 dream prompt 对极短输入的处理，列为跟进项。 |
