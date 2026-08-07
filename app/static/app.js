@@ -343,6 +343,7 @@
     // 定位到当前该打的 prose：跳过"已完成且无待显字"的
     while (_typerIdx < _typerEls.length) {
       var e = _typerEls[_typerIdx];
+      if (!e._started) { e._started = true; if (e._onStart) e._onStart(); }  // 首次触及该段 -> 显示其标题
       if (e._s < (e._p || "").length) break;   // 有字可打
       if (!e._done) break;                       // 没字但 LLM 可能还会追加 → 停在这等
       _typerIdx++;
@@ -375,6 +376,8 @@
     prose._txt = tn; prose._p = ""; prose._s = 0;
     prose._done = !!prefersReduced;
     prose._card = card || null;
+    prose._started = false;   // 打字机首次触及该段时置 true（用于延迟显示标题）
+    prose._onStart = null;    // 首次触及回调：由 streamEntry 注册，用于在该段开始打字时才插入标题
     _typerEls.push(prose);
   }
   function typerAppend(prose, text) {
@@ -400,6 +403,7 @@
         el._s = el._p.length;
       }
       el._done = true;
+      if (!el._started) { el._started = true; if (el._onStart) el._onStart(); }  // 跳过时补显标题
     });
     typerEnsure();
   }
@@ -426,18 +430,21 @@
       var skel = $(".entry-skel", bodyEl); if (skel) skel.remove();   // 首段正文到达，撤下骨架屏
       var div = document.createElement("div");
       div.className = "entry-section" + (isAdvice ? " advice" : "");
-      if (title) {
-        var h = document.createElement("div");
-        h.className = "entry-section-title";
-        h.textContent = title;            // 标题不走打字机，即时显示
-        div.appendChild(h);
-      }
       var prose = document.createElement("div");
       prose.className = "prose";
       div.appendChild(prose);
       bodyEl.appendChild(div);
       typerRegister(prose, li);           // 正文走打字机
       proses.push(prose);
+      // 标题延迟到本段正文开始打字时才插入，避免「后段标题先于前段正文出现」；
+      // 减弱动效模式下正文即时显示，标题也即时显示
+      if (title) {
+        var h = document.createElement("div");
+        h.className = "entry-section-title";
+        h.textContent = title;
+        if (prefersReduced) div.insertBefore(h, prose);
+        else prose._onStart = function () { if (!h.parentNode) div.insertBefore(h, prose); };
+      }
       return prose;
     }
 
@@ -795,8 +802,6 @@
       }
     }
 
-    var initial = {};
-    try { initial = JSON.parse(($("#initial-fortune") || {}).textContent || "{}") || {}; } catch (e) {}
     var curSign = window.__sign || "";
     var period = window.__period || "today";
     var periodLabel = window.__periodLabel || "今日运势";
@@ -807,15 +812,9 @@
     }
 
     function renderInitial() {
-      if (!curSign) { showEmpty(); return; }
-      target.innerHTML = buildFortune(curSign, periodLabel);
-      var card = $("#fortune-card", target);
-      var regen = $(".regen-btn", card);
-      if (regen) regen.addEventListener("click", function () { generate(curSign, true); });
-      if (initial && Object.keys(initial).length) {
-        Object.keys(initial).forEach(function (k) { applySection(card, k, initial[k]); });
-        card.classList.remove("is-streaming-card");
-      }
+      // 默认进入「待选择」状态：不自动回放上次缓存的运势（避免「残留页面」感）；
+      // 用户已选星座在上方 hero 与星座网格高亮保留，点击即加载
+      showEmpty();
     }
 
     function setControlsBusy(card, busy) {
