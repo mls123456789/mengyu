@@ -24,7 +24,8 @@ from app.services.astro import compute                                          
 from app.services.horoscope import horoscope_stream, period_key                 # noqa: E402
 
 DIMENSIONS = ["accuracy", "readability"]
-COPY_TIMEOUT = 60
+COPY_TIMEOUT = 90
+COPY_RETRIES = 2  # 空输出/超时重试（DeepSeek 偶发空 completion 与瞬态慢响应）
 
 
 # ---------------------------------------------------------------------------
@@ -69,18 +70,23 @@ def _format_rubric(dim: dict, engine_data: str = "") -> str:
 # 文案获取
 # ---------------------------------------------------------------------------
 async def _get_copy(sign: str, dt: date, comp: dict) -> str:
-    """收集流式运势文案全文（含超时与异常兜底）。"""
-    try:
-        async def _collect():
-            chunks: list[str] = []
-            async for chunk in horoscope_stream(sign=sign, period="today", comp=comp):
-                chunks.append(chunk)
-            return "".join(chunks)
-        return await asyncio.wait_for(_collect(), timeout=COPY_TIMEOUT)
-    except asyncio.TimeoutError:
-        return f"[TIMEOUT] 文案生成超时（>{COPY_TIMEOUT}s）"
-    except Exception as exc:
-        return f"[LLM_ERROR] 文案生成失败: {type(exc).__name__}: {exc}"
+    """收集流式运势文案全文（含超时/异常兜底与空输出重试）。"""
+    for _attempt in range(COPY_RETRIES + 1):
+        try:
+            async def _collect():
+                chunks: list[str] = []
+                async for chunk in horoscope_stream(sign=sign, period="today", comp=comp):
+                    chunks.append(chunk)
+                return "".join(chunks)
+            text = await asyncio.wait_for(_collect(), timeout=COPY_TIMEOUT)
+            if text.strip():
+                return text
+            # 空输出：DeepSeek 偶发空 completion，重试
+        except asyncio.TimeoutError:
+            continue  # 瞬态慢响应/挂起，重试（run 实测同 case 重跑可正常生成）
+        except Exception as exc:
+            return f"[LLM_ERROR] 文案生成失败: {type(exc).__name__}: {exc}"
+    return "[FAIL] 文案生成重试耗尽（超时或空输出）"
 
 
 # ---------------------------------------------------------------------------
@@ -105,14 +111,32 @@ async def run(judge) -> list[dict]:
         comp = compute(sign, "today", period_key("today", dt))
         copy_text = await _get_copy(sign, dt, comp)
 
-        # engine data 摘要（注入 accuracy rubric）
+        # engine data 摘要（注入 accuracy rubric 作为 ground truth）
+        # 必须与 horoscope_stream 的 prompt 输入对齐：prompt 明确把真实星象与黄历
+        # 喂给模型并允许引用；若 ground truth 漏掉这些字段，judge 会把合法引用
+        # 误判为「编造」。分两段：必须原样呈现 vs 可引用（不得超出范围编造）。
+        ad = comp.get("astro", {})
+        alm = comp.get("almanac", {})
+        _retro_zh = {"mercury": "水星", "venus": "金星", "saturn": "土星"}
+        retro = [n for k, n in _retro_zh.items() if ad.get("retrograde", {}).get(k)]
         engine = (
+            f"【必须原样呈现】\n"
             f"综合指数={comp['overall']['score']}；爱情={comp['love']['score']}；"
             f"事业={comp['career']['score']}；财富={comp['wealth']['score']}；健康={comp['health']['score']}\n"
             f"幸运色={comp['lucky']['color']}；幸运数字={comp['lucky']['number']}；"
             f"幸运方位={comp['lucky']['direction']}；幸运物品={comp['lucky']['item']}\n"
             f"速配星座={comp['match']['best']}；相克星座={comp['match']['worst']}\n"
-            f"宜={','.join(comp['yiji']['yi'])}；忌={','.join(comp['yiji']['ji'])}"
+            f"宜={','.join(comp['yiji']['yi'])}；忌={','.join(comp['yiji']['ji'])}\n"
+            f"【文案可引用（真实数据，不得超出此范围编造）】\n"
+            f"行星：太阳={ad.get('sun_sign', '')}；月亮={ad.get('moon_sign', '')}"
+            f"（月相 {ad.get('moon_phase', 0):.0%}）；"
+            f"水星={ad.get('mercury_sign', '')}；金星={ad.get('venus_sign', '')}；"
+            f"火星={ad.get('mars_sign', '')}；木星={ad.get('jupiter_sign', '')}；"
+            f"土星={ad.get('saturn_sign', '')}"
+            + (f"；逆行={'、'.join(retro)}" if retro else "") + "\n"
+            f"黄历：干支={alm.get('ganzhi', '')}；建除={alm.get('zhixing', '')}；"
+            f"纳音={alm.get('nayin', '')}；财神={alm.get('caishen', '')}；"
+            f"喜神={alm.get('xishen', '')}；福神={alm.get('fushen', '')}"
         )
 
         for dim_key in DIMENSIONS:

@@ -37,6 +37,9 @@ from app.services.llm import LLMError, stream_chat  # noqa: E402
 # 单次评审最长等待（秒）：覆盖 stream_chat 两次重试的最坏耗时，
 # 防止上游慢响应把整个 suite 拖过 CI 时限
 JUDGE_TIMEOUT = 150
+# 空输出 / 无法解析时的重试次数：DeepSeek 等模型偶发返回空 completion，
+# 同一 prompt 重试通常即恢复；timeout / LLMError 视为真失败不重试
+JUDGE_RETRIES = 2
 
 
 def _coerce_score(obj: dict, max_score: int) -> int | None:
@@ -92,21 +95,28 @@ async def judge(rubric: str, content: str, *, max_score: int = 5) -> dict:
             [d async for d in stream_chat(JUDGE_SYSTEM, user_msg, temperature=0.0)]
         )
 
-    try:
-        raw = await asyncio.wait_for(_collect(), timeout=JUDGE_TIMEOUT)
-    except asyncio.TimeoutError:
-        return {"score": None, "reason": f"judge 调用超时（>{JUDGE_TIMEOUT}s）"}
-    except LLMError as exc:
-        return {"score": None, "reason": f"LLM 调用失败: {exc}"}
-    obj = _extract_json(raw)
-    if not obj or "score" not in obj:
-        return {"score": None, "reason": f"评审输出无法解析: {raw[:200]}"}
-    score = _coerce_score(obj, max_score)
-    if score is None:
-        return {"score": None,
-                "reason": f"评审分数非法（应为 1-{max_score} 整数）: "
-                          f"{str(obj.get('score'))[:50]}"}
-    return {"score": score, "reason": str(obj.get("reason", "")).strip()}
+    last_reason = ""
+    for _attempt in range(JUDGE_RETRIES + 1):
+        try:
+            raw = await asyncio.wait_for(_collect(), timeout=JUDGE_TIMEOUT)
+        except asyncio.TimeoutError:
+            # 超时已耗满预算，不重试，交覆盖率闸处理
+            return {"score": None, "reason": f"judge 调用超时（>{JUDGE_TIMEOUT}s）"}
+        except LLMError as exc:
+            # stream_chat 内部已重试过连接失败；此处为真失败，不重试
+            return {"score": None, "reason": f"LLM 调用失败: {exc}"}
+        obj = _extract_json(raw)
+        if obj and "score" in obj:
+            score = _coerce_score(obj, max_score)
+            if score is not None:
+                return {"score": score, "reason": str(obj.get("reason", "")).strip()}
+            last_reason = (f"评审分数非法（应为 1-{max_score} 整数）: "
+                           f"{str(obj.get('score'))[:50]}")
+        else:
+            # 空输出 / 非 JSON：DeepSeek 偶发空 completion，重试通常恢复
+            last_reason = f"评审输出无法解析（raw 为空或非 JSON）: {raw[:120]}"
+    return {"score": None,
+            "reason": f"经 {JUDGE_RETRIES + 1} 次尝试仍失败: {last_reason}"}
 
 
 def main() -> None:
