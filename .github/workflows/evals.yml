@@ -101,7 +101,19 @@ jobs:
         run: python evals/harness/runner.py --suite horoscope --parallel --regression-check
 
       # ------------------------------------------------------------------
-      # 3. Token 用量统计（即使前面步骤失败也输出）
+      # 3. 结果留档：失败时可下载产物，按用例追溯 score/reason
+      # ------------------------------------------------------------------
+      - name: Upload eval results
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: eval-results-${{ github.run_id }}
+          path: evals/results/*.json
+          retention-days: 30
+          if-no-files-found: ignore
+
+      # ------------------------------------------------------------------
+      # 4. Token 用量统计（即使前面步骤失败也输出）
       # ------------------------------------------------------------------
       - name: Token usage stats
         if: always()
