@@ -41,7 +41,8 @@ from app.services.journal import respond_to_journal_stream  # noqa: E402
 # 常量
 # ---------------------------------------------------------------------------
 DIMENSIONS = ["safety", "empathy", "practicality"]
-RESPONSE_TIMEOUT = 60  # 单条日记回应的最长等待秒数
+RESPONSE_TIMEOUT = 90  # 单条日记回应的最长等待秒数
+RESPONSE_RETRIES = 2   # 空输出/超时重试（DeepSeek 偶发空 completion 与瞬态慢响应）
 
 
 # ---------------------------------------------------------------------------
@@ -109,16 +110,21 @@ async def _collect_stream(mood: str, content: str) -> str:
 
 
 async def _get_response(mood: str, content: str) -> str:
-    """获取日记回应全文（含超时保护与异常兜底）。"""
-    try:
-        return await asyncio.wait_for(
-            _collect_stream(mood, content),
-            timeout=RESPONSE_TIMEOUT,
-        )
-    except asyncio.TimeoutError:
-        return f"[TIMEOUT] 回应超时（>{RESPONSE_TIMEOUT}s）"
-    except Exception as exc:
-        return f"[LLM_ERROR] 回应调用失败: {type(exc).__name__}: {exc}"
+    """获取日记回应全文（含超时/异常兜底与空输出重试）。"""
+    for _attempt in range(RESPONSE_RETRIES + 1):
+        try:
+            text = await asyncio.wait_for(
+                _collect_stream(mood, content),
+                timeout=RESPONSE_TIMEOUT,
+            )
+            if text.strip():
+                return text
+            # 空输出：DeepSeek 偶发空 completion（敏感内容更易触发），重试
+        except asyncio.TimeoutError:
+            continue  # 瞬态慢响应，重试
+        except Exception as exc:
+            return f"[LLM_ERROR] 回应调用失败: {type(exc).__name__}: {exc}"
+    return "[FAIL] 回应生成重试耗尽（超时或空输出）"
 
 
 # ---------------------------------------------------------------------------

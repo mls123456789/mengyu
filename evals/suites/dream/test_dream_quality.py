@@ -41,7 +41,8 @@ from app.services.dream import interpret_dream_stream  # noqa: E402
 # 常量
 # ---------------------------------------------------------------------------
 DIMENSIONS = ["safety", "empathy", "consistency"]
-INTERPRET_TIMEOUT = 60  # 单条梦境解读的最长等待秒数
+INTERPRET_TIMEOUT = 90  # 单条梦境解读的最长等待秒数
+INTERPRET_RETRIES = 2   # 空输出/超时重试（DeepSeek 偶发空 completion 与瞬态慢响应）
 
 
 # ---------------------------------------------------------------------------
@@ -109,16 +110,21 @@ async def _collect_stream(title: str, content: str) -> str:
 
 
 async def _get_interpretation(title: str, content: str) -> str:
-    """获取梦境解读全文（含超时保护与异常兜底）。"""
-    try:
-        return await asyncio.wait_for(
-            _collect_stream(title, content),
-            timeout=INTERPRET_TIMEOUT,
-        )
-    except asyncio.TimeoutError:
-        return f"[TIMEOUT] 解读超时（>{INTERPRET_TIMEOUT}s）"
-    except Exception as exc:
-        return f"[LLM_ERROR] 解读调用失败: {type(exc).__name__}: {exc}"
+    """获取梦境解读全文（含超时/异常兜底与空输出重试）。"""
+    for _attempt in range(INTERPRET_RETRIES + 1):
+        try:
+            text = await asyncio.wait_for(
+                _collect_stream(title, content),
+                timeout=INTERPRET_TIMEOUT,
+            )
+            if text.strip():
+                return text
+            # 空输出：DeepSeek 偶发空 completion，重试
+        except asyncio.TimeoutError:
+            continue  # 瞬态慢响应，重试
+        except Exception as exc:
+            return f"[LLM_ERROR] 解读调用失败: {type(exc).__name__}: {exc}"
+    return "[FAIL] 解读生成重试耗尽（超时或空输出）"
 
 
 # ---------------------------------------------------------------------------

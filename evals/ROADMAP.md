@@ -83,3 +83,4 @@
 | 2026-08-07 | v1.0 架构审查修复三项致命缺陷：runner 误吞 pytest 型黄金集文件（horoscope 门禁恒红）；regression 门禁重跑整套 LLM（CI 成本×2、产物与门禁不一致）；CI 漏跑星座引擎黄金集。同期加固：judge 分数校验/超时、评分覆盖率闸、Secrets 预检、token 统计独立脚本。 |
 | 2026-08-07 | 切换 deepseek-v4 系列后 dream suite 重校准：新增 per-category 阈值（无风险类别 safety 3.0「温和无害」——旧 4.0 是校准在 GLM 过度防御行为上的错误基线；sensitive 保持 4.0 主动守护）。发现已知弱点：vague 极短输入（"梦到一条河"）产出公式化共情（实测 2.0，绊线阈值），根治需优化 dream prompt 对极短输入的处理，列为跟进项。 |
 | 2026-08-07 | horoscope copy suite 修复：accuracy rubric 的 ground-truth 原本只含分数/幸运/宜忌，漏掉 prompt 实际提供的星象（行星位置/月相）与黄历（干支/纳音/建除），导致 judge 把模型合法引用误判为「编造」（accuracy=3）；对齐 ground-truth 后全 5 分。同期加 judge 空输出重试 + 生成空/超时重试，治理 DeepSeek flash 偶发空 completion 与瞬态慢响应。三 suite（dream/journal/horoscope）在 flash 上本地全绿。 |
+| 2026-08-07 | journal/dream 生成侧补空输出/超时重试（与 horoscope 一致）；journal 阈值再校准：normal/empathy 4.0->3.0（flash 对平静日记给轻盈恰当回应，4.0 是 GLM 文风基线）、sensitive/practicality 4.5->4.0（单样本 4.5=必须满分过严）。发现：本地并行跑多 suite 会撞 DeepSeek 限流致响应降质，CI 分步串行不受影响。 |
