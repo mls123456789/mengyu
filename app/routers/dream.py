@@ -90,6 +90,7 @@ def _dreams_for_view(user_id: int) -> list[dict]:
 @router.get("")
 def dream_page(request: Request, user: CurrentUser = Depends(require_user)):
     return templates.TemplateResponse(
+        request,
         "dream.html",
         {
             "request": request,

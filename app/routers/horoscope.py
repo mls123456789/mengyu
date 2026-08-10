@@ -103,6 +103,7 @@ def horoscope_page(request: Request, period: str = "today", user: CurrentUser = 
     from app.services.horoscope import PERIOD_LABELS
 
     return templates.TemplateResponse(
+        request,
         "horoscope.html",
         {
             "request": request,

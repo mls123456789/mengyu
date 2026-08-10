@@ -25,6 +25,7 @@ def index(request: Request):
             ).fetchone()["c"]
         stats = {"dreams": d, "journals": j}
     return templates.TemplateResponse(
+        request,
         "index.html",
         {"request": request, "user": user, "stats": stats, "llm_ready": settings.llm_ready},
     )

@@ -26,6 +26,7 @@ def me_page(request: Request, user: CurrentUser = Depends(require_user)):
             "SELECT COUNT(*) AS c FROM journals WHERE user_id = ?", (user.id,)
         ).fetchone()["c"]
     return templates.TemplateResponse(
+        request,
         "me.html",
         {
             "request": request,

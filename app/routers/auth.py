@@ -58,6 +58,7 @@ def _auth_allowed(action: str, ip: str, limit: int, window: int) -> bool:
 @router.get("/register")
 async def register_page(request: Request):
     return templates.TemplateResponse(
+        request,
         "auth.html",
         {"request": request, "mode": "register", "llm_ready": settings.llm_ready},
     )
@@ -75,6 +76,7 @@ async def register_submit(
     # 限流置于最前：超限直接 429，跳过后续校验与 PBKDF2 哈希（防批量注册 + 省 CPU）
     if not _auth_allowed("register", _client_ip(request), _REGISTER_LIMIT, _REGISTER_WINDOW):
         return templates.TemplateResponse(
+            request,
             "auth.html",
             {
                 "request": request,
@@ -106,6 +108,7 @@ async def register_submit(
             error = "该用户名已被占用"
 
     return templates.TemplateResponse(
+        request,
         "auth.html",
         {
             "request": request,
@@ -121,6 +124,7 @@ async def register_submit(
 @router.get("/login")
 async def login_page(request: Request):
     return templates.TemplateResponse(
+        request,
         "auth.html",
         {"request": request, "mode": "login", "llm_ready": settings.llm_ready},
     )
@@ -138,6 +142,7 @@ async def login_submit(
     # 限流置于最前：超限直接 429，不执行 PBKDF2（防爆破/撞库，兼防 CPU 耗尽）
     if not _auth_allowed("login", _client_ip(request), _LOGIN_LIMIT, _LOGIN_WINDOW):
         return templates.TemplateResponse(
+            request,
             "auth.html",
             {
                 "request": request,
@@ -164,6 +169,7 @@ async def login_submit(
         return RedirectResponse(url="/", status_code=303)
 
     return templates.TemplateResponse(
+        request,
         "auth.html",
         {
             "request": request,
