@@ -43,7 +43,9 @@ async def stream_chat(
     """异步流式调用 chat completion，逐段 yield 文本增量。
 
     连接阶段失败（超时/拒绝）重试 1 次；一旦已向调用方输出过文本就不再重试，
-    以免向用户重复推送同一段内容。
+    以免向用户重复推送同一段内容。流式正常结束但未产出任何内容（DeepSeek
+    偶发空 completion）同样重试；重试耗尽仍空则静默返回空（保持 API 兼容，
+    由上层 judge/suite 的重试与兜底接管）。
     """
     client = get_async_client()
     messages = [
@@ -54,6 +56,7 @@ async def stream_chat(
 
     produced = False
     last_exc = None
+    empty_completion = False  # 流式正常结束但未产出任何内容（DeepSeek 偶发空 completion）
     for _attempt in range(2):  # 最多尝试 2 次
         try:
             # async with 管理上游流：正常结束/异常/调用方被取消（客户端断开 SSE）
@@ -73,18 +76,30 @@ async def stream_chat(
                     if delta:
                         produced = True
                         yield delta
+            if not produced:
+                # 流式正常结束但未产出任何内容：DeepSeek 偶发空 completion。
+                # 未 yield 过，重试不会重复推送；标记后进入下一次尝试。
+                empty_completion = True
+                continue
             alert.on_llm_ok()  # 一次完整成功 → 重置连续失败计数
             return  # 正常结束
         except LLMError:
             raise
         except Exception as exc:  # noqa: BLE001 - 统一转为业务异常
             last_exc = exc
+            empty_completion = False
             if produced:
                 # 已经输出过内容，重试会造成重复——直接报错
                 logger.warning("LLM 流式中断（已输出，不重试）: %s", exc)
                 alert.on_llm_error(exc)
                 raise LLMError("AI 回应中断了，请重试一次") from exc
             # 尚未输出任何内容：进入下一次重试
+    if empty_completion and not produced:
+        # 连续空 completion：DeepSeek 偶发行为，非服务故障。静默返回空（保持
+        # API 兼容，让上层 judge/suite 的重试与兜底接管）；不调 on_llm_error
+        # （空率约 12%，会误触 webhook 告警阈值），不调 on_llm_ok（不掩盖真实失败计数）。
+        logger.warning("LLM 连续 %d 次返回空 completion，静默返回空", 2)
+        return
     logger.warning("LLM 调用失败（已重试仍失败）: %s", last_exc)
     alert.on_llm_error(last_exc)
     raise LLMError("AI 服务暂时不可用，请稍后再试") from last_exc

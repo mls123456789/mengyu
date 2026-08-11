@@ -194,3 +194,31 @@ async def test_stream_chat_empty_chunks_skipped(monkeypatch, llm_enabled):
 
     parts = await _collect_stream_chat("sys", "usr")
     assert parts == ["real", "text"]
+
+
+@pytest.mark.anyio
+async def test_stream_chat_empty_completion_retries_then_empty(monkeypatch, llm_enabled):
+    """连续 2 次空 completion（流式正常结束但无内容）-> 重试 2 次后静默返回空，不 raise。"""
+    comps = _MockCompletions([
+        _MockStream([None, None]),  # 空 completion：choices=[] 被跳过，produced=False
+        _MockStream([None, None]),
+    ])
+    _install_mock_client(monkeypatch, comps)
+
+    parts = await _collect_stream_chat("sys", "usr")
+    assert parts == []                       # 静默返回空，不 raise
+    assert len(comps.call_kwargs_list) == 2  # 重试了 2 次
+
+
+@pytest.mark.anyio
+async def test_stream_chat_empty_completion_then_success(monkeypatch, llm_enabled):
+    """第一次空 completion、第二次正常 -> 重试后产出真实内容。"""
+    comps = _MockCompletions([
+        _MockStream([None, None]),          # 第一次：空 completion
+        _MockStream(["hello", " world"]),   # 第二次：正常
+    ])
+    _install_mock_client(monkeypatch, comps)
+
+    parts = await _collect_stream_chat("sys", "usr")
+    assert parts == ["hello", " world"]
+    assert len(comps.call_kwargs_list) == 2
