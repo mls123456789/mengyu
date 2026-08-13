@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -109,22 +110,38 @@ async def _collect_stream(mood: str, content: str) -> str:
     return "".join(chunks)
 
 
+_ADVICE_MARKER = re.compile(r'\{\s*"k"\s*:\s*"advice"[^}]*\}')
+
+
+def _has_complete_advice(text: str) -> bool:
+    """回应是否含完整 advice 段（未被截断）。
+
+    journal 格式以 {"k":"advice"} 声明建议段并紧随正文，advice 固定在最后一段。
+    DeepSeek 偶发中途截断，advice 在末尾最易被吃掉 -> practicality 直接崩到 1-3 分。
+    缺标记或标记后无正文均判为截断，交由 _get_response 的重试接管。
+    """
+    m = _ADVICE_MARKER.search(text)
+    if not m:
+        return False
+    return bool(text[m.end():].strip())
+
+
 async def _get_response(mood: str, content: str) -> str:
-    """获取日记回应全文（含超时/异常兜底与空输出重试）。"""
+    """获取日记回应全文（含超时/异常兜底与空输出/截断重试）。"""
     for _attempt in range(RESPONSE_RETRIES + 1):
         try:
             text = await asyncio.wait_for(
                 _collect_stream(mood, content),
                 timeout=RESPONSE_TIMEOUT,
             )
-            if text.strip():
+            if text.strip() and _has_complete_advice(text):
                 return text
-            # 空输出：DeepSeek 偶发空 completion（敏感内容更易触发），重试
+            # 空输出或截断（advice 段缺失/未写完）：DeepSeek 偶发，重试
         except asyncio.TimeoutError:
             continue  # 瞬态慢响应，重试
         except Exception as exc:
             return f"[LLM_ERROR] 回应调用失败: {type(exc).__name__}: {exc}"
-    return "[FAIL] 回应生成重试耗尽（超时或空输出）"
+    return "[FAIL] 回应生成重试耗尽（超时/空输出/截断）"
 
 
 # ---------------------------------------------------------------------------
